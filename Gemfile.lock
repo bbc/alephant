@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-sdk (1.31.3)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+      uuidtools (~> 2.1)
+    coderay (1.1.0)
+    ffi (1.9.3-java)
+    json (1.8.1-java)
+    method_source (0.8.2)
+    mini_portile (0.5.2)
+    nokogiri (1.6.1-java)
+      mini_portile (~> 0.5.0)
+    pry (0.9.12.4-java)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+      spoon (~> 0.0)
+    slop (3.4.7)
+    spoon (0.0.4)
+      ffi
+    uuidtools (2.1.4)
+
+PLATFORMS
+  java
+
+DEPENDENCIES
+  aws-sdk (~> 1.0)
+  pry
