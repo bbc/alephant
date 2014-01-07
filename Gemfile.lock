@@ -17,6 +17,7 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
       spoon (~> 0.0)
+    rack (1.5.2)
     slop (3.4.7)
     spoon (0.0.4)
       ffi
@@ -28,3 +29,4 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk (~> 1.0)
   pry
+  rack
