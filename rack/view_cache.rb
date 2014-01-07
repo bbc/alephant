@@ -1,6 +1,5 @@
 require 'rack'
-
-require 'config'
+require 'env'
 require 'models/s3_cache'
 
 class ViewCache
@@ -13,3 +12,4 @@ class ViewCache
     [200, {"Content-Type" => "text/html"}, [content]]
   end
 end
+
