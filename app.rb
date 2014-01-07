@@ -1,13 +1,13 @@
 require 'aws-sdk'
 require 'env'
 require 'json'
-require 'models/s3_cache'
+require 'models/cacher'
 require 'models/renderer'
 
 cache_id = "s3-render-example"
 
 queue = AWS::SQS.new.queues.create(cache_id)
-cache = S3Cache.new(cache_id)
+cache = Cacher.new(cache_id)
 renderer = Renderer.new
 
 t = Thread.new do

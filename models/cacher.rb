@@ -1,6 +1,6 @@
 require 'aws-sdk'
 
-class S3Cache
+class Cacher
 
   def initialize(id)
     @s3_bucket = AWS::S3.new.buckets[id]

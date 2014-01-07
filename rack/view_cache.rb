@@ -1,11 +1,11 @@
 require 'rack'
 require 'env'
-require 'models/s3_cache'
+require 'models/cacher'
 
 class ViewCache
   def call(env)
     cache_id = "s3-render-example"
-    cache = S3Cache.new(cache_id)
+    cache = Cacher.new(cache_id)
 
     content = cache.get("example")
 
