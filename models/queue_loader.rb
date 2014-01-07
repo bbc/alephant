@@ -1,14 +1,16 @@
 require 'aws-sdk'
 require 'json'
+require 'models/sequencer'
 
 class QueueLoader
 
   def initialize(id)
     @sqs_queue = AWS::SQS.new.queues.create(id)
+    @sequencer = Sequencer.new(id)
   end
 
   def run
-    sequence_number = 0
+    sequence_number = @sequencer.last_seen
     loop do
       payload = {
         :results => {
@@ -20,7 +22,7 @@ class QueueLoader
       }
 
       msg = @sqs_queue.send_message payload.to_json
-      puts "Sent message: #{msg.id}"
+      puts "Sent message: #{msg.id} (seq: #{sequence_number})"
 
       sequence_number += 1
       sleep 1

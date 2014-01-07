@@ -31,18 +31,22 @@ class Sequencer
   end
 
   def last_seen
-    @table.batch_get(
-      ['value'],
-      ['last_seen'],
-      {
-        :consistent_read => true
-      }
-    ).first["value"].to_i
+    begin
+      @table.batch_get(
+        ['value'],
+        ['last_seen'],
+        {
+          :consistent_read => true
+        }
+      ).first["value"].to_i
+    rescue
+      0
+    end
   end
 
   def last_seen=(last_seen)
     batch = AWS::DynamoDB::BatchWrite.new
-    batch.put('example', [:key => "last_seen",:value => last_seen])
+    batch.put(@id, [:key => "last_seen",:value => last_seen])
     batch.process!
   end
 
