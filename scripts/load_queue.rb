@@ -1,5 +1,7 @@
 require 'aws-sdk'
 require 'json'
+require 'env'
+
 require 'models/sequencer'
 
 class QueueLoader
@@ -30,4 +32,12 @@ class QueueLoader
   end
 
 end
+
+cache_id = "s3-render-example"
+
+t = Thread.new do
+  QueueLoader.new(cache_id).run
+end
+
+t.join
 
