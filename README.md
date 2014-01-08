@@ -1,7 +1,7 @@
-S3-Render
+alephant
 =========
 
-Demonstrating render to S3 on push notification from SQS
+Static publishing to s3 on push notification from SQS
 
 ##Dependencies
 
