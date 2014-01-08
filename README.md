@@ -23,7 +23,11 @@ Start the Queue Loader to load dummy data into the queue:
 `ruby load_queue.rb`
 
 Start the render to cache application:
-`ruby app.rb`
+`./bin/alephant.rb`
 
-Start the rack server to view the cache:
-`rackup`
+##Usage as a jar
+`warble compiled jar`
+
+###Running the service
+`java -jar alephant.jar`
+
