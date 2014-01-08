@@ -1,14 +1,14 @@
 require 'aws-sdk'
 require 'json'
-require 'env'
 
-require 'models/sequencer'
+require './lib/env'
+require './lib/models/sequencer'
 
 class QueueLoader
 
   def initialize(id)
     @sqs_queue = AWS::SQS.new.queues.create(id)
-    @sequencer = Sequencer.new(id)
+    @sequencer = Alephant::Sequencer.new(id)
   end
 
   def run
