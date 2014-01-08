@@ -8,9 +8,7 @@ require 'models/sequencer'
 
 module Alephant
 
-  def self.run
-    cache_id = "s3-render-example"
-
+  def self.run(cache_id)
     queue = AWS::SQS.new.queues.create(cache_id)
     cache = Cache.new(cache_id)
     sequencer = Sequencer.new(cache_id)

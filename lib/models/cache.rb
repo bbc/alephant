@@ -4,7 +4,7 @@ module Alephant
   class Cache
 
     def initialize(id)
-      @s3_bucket = AWS::S3.new.buckets[id]
+      @s3_bucket = AWS::S3.new.buckets.create(id)
     end
 
     def get(object_id)
