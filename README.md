@@ -17,19 +17,16 @@ Ensure you have a `config/aws.yml` in the format:
 access_key_id: ACCESS_KEY_ID
 secret_access_key: SECRET_ACCESS_KEY
 ```
-Install the gem dependencies:
-`bundle install`
 
-##Usage
-Start the Queue Loader to load dummy data into the queue:
-`ruby load_queue.rb`
+Install the gem:
+```sh
+gem install alephant
+```
 
-Start the render to cache application:
-`./bin/alephant.rb`
+In your application:
+```rb
+require 'alephant'
 
-##Usage as a jar
-`warble compiled jar`
-
-###Running the service
-`java -jar alephant.jar`
+Alephant.run('your_cache_id')
+```
 
