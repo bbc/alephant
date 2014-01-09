@@ -3,8 +3,11 @@ require 'spec_helper'
 describe Alephant::Renderer do
   let(:id) { :id }
   subject { Alephant::Renderer }
-  it "sets the attribute id" do
-    expect(subject.new(id).id).to eq(id)
+
+  describe "id=" do
+    it "sets the attribute id" do
+      expect(subject.new(id).id).to eq(id)
+    end
   end
 
   describe "template(id)" do
