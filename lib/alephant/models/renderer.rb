@@ -3,6 +3,8 @@ require 'mustache'
 
 module Alephant
   class Renderer
+    DEFAULT_LOCATION = 'views'
+
     attr_reader :id
 
     def initialize(id)
@@ -14,6 +16,18 @@ module Alephant
         template(@id),
         model(@id,data)
       )
+    end
+
+    def base_path
+      @base_path || DEFAULT_LOCATION
+    end
+
+    def base_path=(path)
+      if File.directory?(path)
+        @base_path = path
+      else
+        raise Errors::InvalidViewPath
+      end
     end
 
     def model(id, data)
