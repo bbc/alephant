@@ -13,7 +13,6 @@ module Alephant
       Mustache.render(template(@id), data)
     end
 
-    private
     def template(id)
       <<-eos
       {{#results}}
