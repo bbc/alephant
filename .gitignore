@@ -1,3 +1,3 @@
 config/*.yml
 Gemfile.lock
-*.gem
+pkg/*.gem
