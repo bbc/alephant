@@ -14,7 +14,7 @@ module Alephant
     sequencer = Sequencer.new(cache_id)
     renderer = Renderer.new(cache_id)
 
-    t = Thread.new do
+    thread = Thread.new do
       puts "Polling queue..."
       queue.poll do |msg|
         data = JSON.parse(msg.body)
@@ -29,7 +29,7 @@ module Alephant
       end
     end
 
-    t.join
+    thread
   end
 end
 
