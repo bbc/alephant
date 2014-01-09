@@ -10,20 +10,25 @@ module Alephant
     end
 
     def render(data)
-      Mustache.render(template(@id), data)
+      Mustache.render(
+        template(@id),
+        model(@id,data)
+      )
+    end
+
+    def model(id, data)
+      model_location =
+        File.join('views','models',"#{id}.rb")
+      require model_location
+
+      eval(id.camelize).new(data)
     end
 
     def template(id)
-      <<-eos
-      {{#results}}
-        <ul>
-          <li>Con: {{con}}</li>
-          <li>Lab: {{lab}}</li>
-          <li>Lib: {{lib}}</li>
-        </ul>
-        {{/results}}
-        <p>Sequence number: {{seq}}</p>
-      eos
+      template_location =
+        File.join('views','templates',"#{id}.mustache")
+
+      File.open(template_location).read
     end
   end
 end
