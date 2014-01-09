@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'alephant'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.date        = '2014-01-08'
   s.summary     = "Static Publishing in the Cloud"
   s.description = "Static publishing to S3 based on SQS messages"
