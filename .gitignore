@@ -1,2 +1,3 @@
 config/*.yml
-*.gem
+Gemfile.lock
+pkg/*.gem
