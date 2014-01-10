@@ -6,6 +6,10 @@ require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/sequencer'
 
+require 'alephant/errors'
+require 'alephant/views'
+
+
 module Alephant
 
   def self.run(cache_id)

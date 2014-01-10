@@ -1,5 +1,7 @@
-config/*.yml
-views
+/config/*.yml
 Gemfile.lock
-pkg/*.gem
 .rspec
+
+/pkg
+/tmp
+
