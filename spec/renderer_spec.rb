@@ -11,14 +11,69 @@ describe Alephant::Renderer do
   end
 
   describe "template(id)" do
-    it "fails" do
-      #fail
+    let(:id) { 'example' }
+    it "returns the template" do
+      instance = subject.new(id)
+      instance.base_path = File.join(
+        File.dirname(__FILE__),
+        'fixtures',
+        'views'
+      )
+
+      template = instance.template(id)
+      expect(template).to eq("{{content}}\n")
+    end
+
+    context 'invalid template' do
+      let(:id) { 'invalid_example' }
+      it 'should raise ViewTemplateNotFound' do
+        instance = subject.new(id)
+        instance.base_path = File.join(
+          File.dirname(__FILE__),
+          'fixtures',
+          'views'
+        )
+
+        expect {
+          instance.template(id)
+        }.to raise_error(
+          Alephant::Errors::ViewTemplateNotFound
+        )
+      end
     end
   end
 
   describe "model(id, data)" do
-    it "fails" do
-      #fail
+    let(:id) { 'example' }
+    let(:data) { { :key => :value } }
+    it "returns the model" do
+      instance = subject.new(id)
+      instance.base_path = File.join(
+        File.dirname(__FILE__),
+        'fixtures',
+        'views'
+      )
+
+      model = instance.model(id, data)
+      model.should be_an Alephant::Views::Base
+      expect(model.data).to eq(data)
+    end
+
+    context "invalid model" do
+      let(:id) { 'invalid_example' }
+      it 'should raise ViewModelNotFound' do
+        instance = subject.new(id)
+        instance.base_path = File.join(
+          File.dirname(__FILE__),
+          'fixtures',
+          'views'
+        )
+        expect {
+          instance.model(id, data)
+        }.to raise_error(
+          Alephant::Errors::ViewModelNotFound
+        )
+      end
     end
   end
 
@@ -51,7 +106,7 @@ describe Alephant::Renderer do
 
     context "base_path = invalid_path" do
       let(:invalid_path) {'./invalid_path'}
-      it "should raise" do
+      it "should raise InvalidViewPath" do
         instance = subject.new(id)
         expect {
           instance.base_path = invalid_path

@@ -3,3 +3,4 @@ module Alephant::Errors
 
   end
 end
+

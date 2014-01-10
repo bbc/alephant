@@ -32,17 +32,26 @@ module Alephant
 
     def model(id, data)
       model_location =
-        File.join('views','models',"#{id}.rb")
-      require model_location
+        File.join(base_path,'models',"#{id}.rb")
 
-      eval(id.camelize).new(data)
+      begin
+        require model_location
+        klass = ::Alephant::Views.get_registered_class(id)
+      rescue Exception => e
+        raise Errors::ViewModelNotFound
+      end
+
+      klass.new(data)
     end
 
     def template(id)
       template_location =
-        File.join('views','templates',"#{id}.mustache")
-
-      File.open(template_location).read
+        File.join(base_path,'templates',"#{id}.mustache")
+      begin
+        File.open(template_location).read
+      rescue Exception => e
+        raise Errors::ViewTemplateNotFound
+      end
     end
   end
 end

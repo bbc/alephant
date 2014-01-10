@@ -1,6 +1,8 @@
 require 'aws-sdk'
 require 'yaml'
 
+require 'alephant/util/string'
+
 config_file = File.join("config", "aws.yml")
 
 if File.exists? config_file

@@ -2,7 +2,10 @@ require 'aws-sdk'
 require 'env'
 require 'json'
 
-require 'alephant/models'
+require 'alephant/models/cache'
+require 'alephant/models/renderer'
+require 'alephant/models/sequencer'
+require 'alephant/views/base'
 require 'alephant/errors'
 
 module Alephant
