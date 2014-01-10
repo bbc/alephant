@@ -1,3 +1,5 @@
+$: << File.dirname(__FILE__)
+
 require 'aws-sdk'
 require 'env'
 require 'json'
@@ -5,8 +7,10 @@ require 'json'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/sequencer'
-require 'alephant/views'
+
 require 'alephant/errors'
+require 'alephant/views'
+
 
 module Alephant
 
