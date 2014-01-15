@@ -3,9 +3,11 @@ require 'aws-sdk'
 module Alephant
   class Sequencer
     attr_reader :id, :table
+    attr_accessor :sequence_proc
 
     def initialize(id)
       @id = id
+      @sequence_id = sequence_id
 
       dynamo_db = AWS::DynamoDB.new
       schema = {
@@ -25,6 +27,14 @@ module Alephant
         sleep_until_table_active
       end
 
+    end
+
+    def sequence(data)
+      if sequence_proc.nil?
+        data["seq"]
+      else
+        0
+      end
     end
 
     def sequential?(n)
