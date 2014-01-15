@@ -54,8 +54,8 @@ describe Alephant::Cache do
       )
 
       AWS::S3.any_instance.stub(:buckets).and_return({ id => s3_bucket })
-      instance = subject.new(id, path)
 
+      instance = subject.new(id, path)
       instance.get(id);
     end
   end
