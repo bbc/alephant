@@ -1,6 +1,9 @@
+$: << File.dirname(__FILE__)
+
 require 'aws-sdk'
-require 'env'
 require 'json'
+
+require_relative 'env'
 
 require 'alephant/models/cache'
 require 'alephant/models/renderer'

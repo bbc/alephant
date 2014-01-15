@@ -2,19 +2,23 @@ require 'aws-sdk'
 
 module Alephant
   class Cache
+    attr_reader :id, :bucket, :path
 
-    def initialize(id)
-      @s3_bucket = AWS::S3.new.buckets.create(id)
+    def initialize(id, path)
+      @id = id
+      @path = path
+
+      s3 = AWS::S3.new
+      @bucket = s3.buckets[id]
     end
 
-    def get(object_id)
-      @s3_bucket.objects[object_id].read
+    def put(id, data)
+      @bucket.objects["#{@path}/#{id}"].write(data)
     end
 
-    def put(object_id, data)
-      @s3_bucket.objects[object_id].write(data)
+    def get(id)
+      @bucket.objects["#{@path}/#{id}"].read
     end
-
   end
 end
 
