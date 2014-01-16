@@ -6,13 +6,16 @@ describe Alephant::Queue do
   describe "poll(*args, &block)" do
     it "calls @q.poll(*args, &block)" do
       block = double()
+      block.should_receive(:called)
 
       AWS::SQS::Queue.any_instance.stub(:exists?)
         .and_return(true)
 
-      AWS::SQS::Queue.any_instance.should_receive(:poll).with(:arg)
+      AWS::SQS::Queue.any_instance.should_receive(:poll).with(:arg).and_yield
 
-      subject.new(:id).poll(:arg)
+      subject.new(:id).poll(:arg) do
+        block.called
+      end
     end
   end
 
