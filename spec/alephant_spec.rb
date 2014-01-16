@@ -159,7 +159,6 @@ describe Alephant::Alephant do
       Alephant::Sequencer.any_instance.stub(:set_last_seen)
 
       instance.should_receive(:write).with(JSON.parse(data))
-
       instance.receive(data)
     end
   end
