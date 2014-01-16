@@ -58,13 +58,12 @@ module Alephant
 
     private
     def set_opts(opts)
-      VALID_OPTS.each do | opt |
-        if opts.has_key? opt do
-          singleton_class.class_eval do
-            attr_accessor opt
-          end
-          send("#{opt}", opts[opt])
+      VALID_OPTS.each do | k |
+        v = opts.has_key? opt ? opts[k] : nil
+        singleton_class.class_eval do
+          attr_accessor opt
         end
+        send("#{k}=", v)
       end
     end
 
