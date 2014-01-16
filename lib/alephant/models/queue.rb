@@ -2,7 +2,7 @@ require 'aws-sdk'
 
 module Alephant
   class Queue
-    attr_accessor :queue
+    attr_accessor :q
 
     def initialize(id)
       @sqs = AWS::SQS.new
