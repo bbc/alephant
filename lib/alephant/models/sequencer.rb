@@ -36,18 +36,17 @@ module Alephant
 
         sleep_until_table_active
       end
-
     end
 
     def sequential?(data)
       if block_given?
-        yield data
+        yield(get_last_seen, data)
       else
-        last_seen < data[:sequence_id]
+        get_last_seen < data[:sequence_id]
       end
     end
 
-    def last_seen
+    def get_last_seen
       begin
         @table.batch_get(
           ['value'],
@@ -61,8 +60,8 @@ module Alephant
       end
     end
 
-    def last_seen=(data)
-      last_seen_id = block_given? ? yield data : data[:sequence_id]
+    def set_last_seen(data)
+      last_seen_id = block_given? ? yield(data) : data[:sequence_id]
 
       batch = AWS::DynamoDB::BatchWrite.new
       batch.put(@table_name, [:key => @id,:value => last_seen_id])
