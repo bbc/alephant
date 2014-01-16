@@ -95,4 +95,39 @@ describe Alephant::Alephant do
       end
     end
   end
+
+  describe "run!" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "returns a Thread" do
+      instance = subject.new({
+        :sqs_queue_id => :sqs_queue_id
+      })
+
+      expect(instance.run!).to be_a(Thread)
+    end
+
+    it "calls @queue.poll" do
+      instance = subject.new({
+        :sqs_queue_id => :sqs_queue_id
+      })
+
+      instance.should_receive(:receive)
+
+      expect_any_instance_of(Alephant::Queue).to receive(:poll).and_yield(:msg)
+
+      t = instance.run!
+      t.join
+    end
+  end
 end
