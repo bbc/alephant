@@ -14,7 +14,7 @@ require 'alephant/errors'
 require 'alephant/views'
 
 module Alephant
-  class AlephantRunner
+  class Alephant
     VALID_OPTS = [
       :s3_bucket_id,
       :s3_object_path,
@@ -60,7 +60,7 @@ module Alephant
     private
     def set_opts(opts)
       VALID_OPTS.each do | k |
-        v = opts.has_key? opt ? opts[k] : nil
+        v = opts.has_key? k ? opts[k] : nil
         singleton_class.class_eval do
           attr_accessor k
         end
