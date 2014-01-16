@@ -43,19 +43,29 @@ module Alephant
       @renderer = Renderer.new(@view_id)
     end
 
+    def parse(msg)
+      JSON.parse(msg)
+    end
+
+    def write(data)
+      @cache.put(
+        @s3_object_id,
+        @renderer.render(data)
+      )
+    end
+
+    def receive(msg)
+      data = parse msg
+
+      if @sequencer.sequential?(data, &@sequential_proc)
+        write data
+        @sequencer.set_last_seen(data, &@set_last_seen_proc)
+      end
+    end
+
     def run!
       Thread.new do
-        @queue.poll do |msg|
-          data = JSON.parse(msg.body)
-
-          if @sequencer.sequential?(data, &@sequential_proc)
-            @cache.put(
-              @s3_object_id,
-              @renderer.render(data)
-            )
-            @sequencer.set_last_seen(data, &@set_last_seen_proc)
-          end
-        end
+        @queue.poll { |msg| receive(msg) }
       end
     end
 
