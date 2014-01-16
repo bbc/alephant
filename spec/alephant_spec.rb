@@ -129,4 +129,37 @@ describe Alephant::Alephant do
       t.join
     end
   end
+
+  describe "receive(msg)" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "takes json as an argument" do
+      instance = subject.new
+
+      expect { instance.receive('notjson') }.to raise_error(JSON::ParserError);
+    end
+
+    it "writes data to cache if sequential order is true" do
+      data = "{ \"foo\":\"bar\" }"
+
+      instance = subject.new
+
+      Alephant::Sequencer.any_instance.stub(:sequential?).and_return(true)
+      Alephant::Sequencer.any_instance.stub(:set_last_seen)
+
+      instance.should_receive(:write).with(JSON.parse(data))
+
+      instance.receive(data)
+    end
+  end
 end
