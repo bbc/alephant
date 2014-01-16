@@ -9,7 +9,7 @@ module Alephant
       @q = @sqs.queues[id]
 
       unless @q.exists?
-        @q = AWS::SQS.new.queues.create(id)
+        @q = @sqs.queues.create(id)
         sleep_until_queue_exists
       end
     end

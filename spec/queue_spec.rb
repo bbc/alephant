@@ -13,18 +13,23 @@ describe Alephant::Queue do
     end
 
     context "@q.exists? == false" do
-      it "@q = new.queues.create(id), then sleep_until_queue_exists" do
+      it "@q = AWS::SQS.new.queues.create(id), then sleep_until_queue_exists" do
         queue = double()
-        queue.stub(:exists?).and_return(true)
+        queue.stub(:exists?).and_return(false)
 
-        AWS::SQS::Queue.any_instance.stub(:create)
+        queue_collection = double()
+        queue_collection.should_receive(:create).with(:id)
           .and_return(queue)
-        AWS::SQS::Queue.any_instance.stub(:exists?)
-          .and_return(false)
+
+        sqs = double()
+        sqs.should_receive(:queues)
+          .and_return({ :id => queue }, queue_collection)
+
+        AWS::SQS.should_receive(:new).and_return(sqs)
 
         subject.any_instance.should_receive(:sleep_until_queue_exists)
 
-        instance = subject.new('id')
+        instance = subject.new(:id)
       end
     end
   end
