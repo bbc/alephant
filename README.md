@@ -3,9 +3,9 @@ alephant
 
 Static publishing to S3 on push notification from SQS
 
-[![Code Climate](https://codeclimate.com/repos/52cd866de30ba018f10000a2/badges/5d9c02131201565a630e/gpa.png)](https://codeclimate.com/repos/52cd866de30ba018f10000a2/feed)
+[![Code Climate](https://codeclimate.com/repos/52d6bec56956802e26011a0f/badges/fce457795179641460e0/gpa.png)](https://codeclimate.com/repos/52d6bec56956802e26011a0f/feed)
 
-[![Build Status](https://travis-ci.org/kenoir/alephant.png?branch=master)](https://travis-ci.org/kenoir/alephant)
+[![Build Status](https://travis-ci.org/BBC-News/alephant.png?branch=master)](https://travis-ci.org/BBC-News/alephant)
 
 [![Gem Version](https://badge.fury.io/rb/alephant.png)](http://badge.fury.io/rb/alephant)
 
