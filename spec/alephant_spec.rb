@@ -122,7 +122,7 @@ describe Alephant::Alephant do
         :sqs_queue_id => :sqs_queue_id
       })
 
-      instance.should_receive(:receive)
+      instance.should_receive(:receive).with(:msg)
 
       expect_any_instance_of(Alephant::Queue).to receive(:poll).and_yield(:msg)
 
