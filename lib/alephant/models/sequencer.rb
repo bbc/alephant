@@ -2,40 +2,55 @@ require 'aws-sdk'
 
 module Alephant
   class Sequencer
-    attr_reader :id, :table
+    attr_reader :id, :table_name, :table_conf
 
-    def initialize(id)
-      @id = id
-
-      dynamo_db = AWS::DynamoDB.new
-      schema = {
-        :hash_key => {
-          :key => :string,
-          :value => :string
+    def table_conf_defaults
+      {
+        :write_units => 5,
+        :read_units => 10,
+        :schema => {
+          :hash_key => {
+            :key => :string,
+            :value => :string
+          }
         }
       }
+    end
 
-      @table = dynamo_db.tables[id]
+    def initialize(opts, id)
+      @table = AWS::DynamoDB.new.tables[@table_name]
+      @table_name = opts[:table_name]
+      @table_conf = opts[:table_conf] || table_conf_defaults
+      @id = id
+
       begin
         sleep_until_table_active
       rescue AWS::DynamoDB::Errors::ResourceNotFoundException
-        puts "CREATING TABLE: #{id}"
-        @table = dynamo_db.tables.create(id, 10, 5, schema)
+        puts "CREATING TABLE: #{@table_name}"
+        @table = dynamo_db.tables.create(
+          @table_name,
+          @table_conf[:read_units],
+          @table_conf[:write_units],
+          @table_conf[:schema]
+        )
 
         sleep_until_table_active
       end
-
     end
 
-    def sequential?(n)
-      last_seen < n
+    def sequential?(data)
+      if block_given?
+        yield(get_last_seen, data)
+      else
+        get_last_seen < data[:sequence_id]
+      end
     end
 
-    def last_seen
+    def get_last_seen
       begin
         @table.batch_get(
           ['value'],
-          ['last_seen'],
+          [@id],
           {
             :consistent_read => true
           }
@@ -45,9 +60,11 @@ module Alephant
       end
     end
 
-    def last_seen=(last_seen)
+    def set_last_seen(data)
+      last_seen_id = block_given? ? yield(data) : data[:sequence_id]
+
       batch = AWS::DynamoDB::BatchWrite.new
-      batch.put(@id, [:key => "last_seen",:value => last_seen])
+      batch.put(@table_name, [:key => @id,:value => last_seen_id])
       batch.process!
     end
 
