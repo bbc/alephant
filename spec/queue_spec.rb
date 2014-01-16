@@ -14,8 +14,11 @@ describe Alephant::Queue do
 
     context "@q.exists? == false" do
       it "@q = new.queues.create(id), then sleep_until_queue_exists" do
+        queue = double()
+        queue.stub(:exists?).and_return(true)
+
         AWS::SQS::Queue.any_instance.stub(:create)
-          .and_return(AWS::SQS::Queue.new('id'))
+          .and_return(queue)
         AWS::SQS::Queue.any_instance.stub(:exists?)
           .and_return(false)
 
