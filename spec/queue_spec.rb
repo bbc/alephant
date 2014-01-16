@@ -3,6 +3,29 @@ require 'spec_helper'
 describe Alephant::Queue do
   subject { Alephant::Queue }
 
+  describe "initialize(id)" do
+    it "sets @q to an instance of AWS:SQS::Queue" do
+      AWS::SQS::Queue.any_instance.stub(:exists?)
+        .and_return(true)
+
+      instance = subject.new(:id)
+      expect(instance.q).to be_a(AWS::SQS::Queue)
+    end
+
+    context "@q.exists? == false" do
+      it "@q = new.queues.create(id), then sleep_until_queue_exists" do
+        AWS::SQS::Queue.any_instance.stub(:create)
+          .and_return(AWS::SQS::Queue.new('id'))
+        AWS::SQS::Queue.any_instance.stub(:exists?)
+          .and_return(false)
+
+        subject.any_instance.should_receive(:sleep_until_queue_exists)
+
+        instance = subject.new('id')
+      end
+    end
+  end
+
   describe "poll(*args, &block)" do
     it "calls @q.poll(*args, &block)" do
       block = double()
