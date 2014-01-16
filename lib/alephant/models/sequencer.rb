@@ -68,7 +68,6 @@ module Alephant
       batch.process!
     end
 
-    private
     def sleep_until_table_active
       sleep 1 until @table.status == :active
     end
