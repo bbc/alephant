@@ -15,38 +15,58 @@ require 'alephant/views'
 
 module Alephant
   class AlephantRunner
-    attr_accessor :queue, :cache, :sequencer, :renderer
-    attr_accessor :s3_bucket_id, :s3_object_path, :table_name, :sqs_queue_id, :view_id
+    VALID_OPTS = [
+      :s3_bucket_id,
+      :s3_object_path,
+      :table_name,
+      :sqs_queue_id,
+      :view_id,
+      :sequential_proc,
+      :set_last_seen_proc
+    ]
 
     def initialize(opts = {})
-      opts.each { |k,v| instance_variable_set("@#{k}",v) }
+      set_opts(opts)
 
-      @sequencer ||= Sequencer.new(
+      @sequencer = Sequencer.new(
         {
           :table_name => @table_name
         },
         @sqs_queue_id
       )
 
-      @queue ||= Queue.new(@sqs_queue_id)
-      @cache ||= Cache.new(@s3_bucket_id)
-      @renderer ||= Renderer.new(@view_id)
+      @queue = Queue.new(@sqs_queue_id)
+      @cache = Cache.new(@s3_bucket_id)
+      @renderer = Renderer.new(@view_id)
     end
 
-    def run!(sequential_proc = nil, set_last_seen_proc = nil)
+    def run!
       Thread.new do
         @queue.poll do |msg|
           data = JSON.parse(msg.body)
 
-          if @sequencer.sequential?(data, &sequential_proc)
+          if @sequencer.sequential?(data, &@sequential_proc)
             @cache.put(
               @s3_object_path,
               @renderer.render(data)
             )
-            @sequencer.set_last_seen(data, &set_last_seen_proc)
+            @sequencer.set_last_seen(data, &@set_last_seen_proc)
           end
         end
       end
     end
+
+    private
+    def set_opts(opts)
+      VALID_OPTS.each do | opt |
+        if opts.has_key? opt do
+          singleton_class.class_eval do
+            attr_accessor opt
+          end
+          send("#{opt}", opts[opt])
+        end
+      end
+    end
+
   end
 end
