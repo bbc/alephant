@@ -15,5 +15,8 @@ module Alephant
       sleep 1 until @q.exists?
     end
 
+    def poll(*args, &block)
+      @q.poll(*args, &block)
+    end
   end
 end
