@@ -18,6 +18,7 @@ module Alephant
     VALID_OPTS = [
       :s3_bucket_id,
       :s3_object_path,
+      :s3_object_id,
       :table_name,
       :sqs_queue_id,
       :view_id,
@@ -36,7 +37,7 @@ module Alephant
       )
 
       @queue = Queue.new(@sqs_queue_id)
-      @cache = Cache.new(@s3_bucket_id)
+      @cache = Cache.new(@s3_bucket_id, @s3_object_path)
       @renderer = Renderer.new(@view_id)
     end
 
@@ -47,7 +48,7 @@ module Alephant
 
           if @sequencer.sequential?(data, &@sequential_proc)
             @cache.put(
-              @s3_object_path,
+              @s3_object_id,
               @renderer.render(data)
             )
             @sequencer.set_last_seen(data, &@set_last_seen_proc)
