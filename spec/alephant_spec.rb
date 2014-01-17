@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 describe Alephant::Alephant do
   subject { Alephant::Alephant }
