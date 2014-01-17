@@ -161,4 +161,29 @@ describe Alephant::Alephant do
       instance.receive(data)
     end
   end
+
+  describe "write(data)" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "puts rendered data into the S3 Cache" do
+      Alephant::Cache.any_instance.should_receive(:put).with(:s3_object_id, :content)
+      Alephant::Renderer.any_instance.stub(:render).and_return(:content)
+
+      instance = subject.new({
+        :s3_object_id => :s3_object_id
+      })
+
+      instance.write(:content)
+    end
+  end
 end
