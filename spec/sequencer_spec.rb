@@ -22,6 +22,30 @@ describe Alephant::Sequencer do
       expect(instance.table_name).to eq(:table_name)
       expect(instance.table_conf).to eq(:table_conf)
     end
+
+  describe "sequential?(data)" do
+    before(:each) do
+      Alephant::Sequencer
+        .any_instance.stub(:initialize)
+        .and_return(double())
+    end
+
+    context "block provided" do
+      it "yields to block" do
+        Alephant::Sequencer
+          .any_instance
+          .stub(:get_last_seen)
+          .and_return(1)
+
+        instance = subject.new
+
+        test = instance.sequential?(:data) do |last_seen, data|
+          :foo
+        end
+
+        expect(test).to eq(:foo)
+      end
+    end
   end
 end
 
