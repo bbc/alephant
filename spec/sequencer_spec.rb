@@ -23,6 +23,11 @@ describe Alephant::Sequencer do
       expect(instance.table_conf).to eq(:table_conf)
     end
 
+    it "calls sleep_until_table_active() until table created" do
+      pending
+    end
+  end
+
   describe "sequential?(data)" do
     before(:each) do
       Alephant::Sequencer
@@ -44,6 +49,16 @@ describe Alephant::Sequencer do
         end
 
         expect(test).to eq(:foo)
+      end
+    end
+
+    context "no block provided" do
+      it "returns true if message is newer than get_last_seen()" do
+        pending
+      end
+
+      it "returns false if message is older than get_last_seen()" do
+        pending
       end
     end
   end
