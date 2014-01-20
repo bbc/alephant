@@ -43,8 +43,16 @@ module Alephant
       if block_given?
         yield(get_last_seen, data)
       else
-        get_last_seen < data[:sequence_id]
+        get_last_seen < data["sequence_id"].to_i
       end
+    end
+
+    def set_last_seen(data)
+      last_seen_id = block_given? ? yield(data) : data["sequence_id"]
+
+      batch = AWS::DynamoDB::BatchWrite.new
+      batch.put(@table_name, [:key => @id,:value => last_seen_id])
+      batch.process!
     end
 
     private
@@ -60,14 +68,6 @@ module Alephant
       rescue
         0
       end
-    end
-
-    def set_last_seen(data)
-      last_seen_id = block_given? ? yield(data) : data[:sequence_id]
-
-      batch = AWS::DynamoDB::BatchWrite.new
-      batch.put(@table_name, [:key => @id,:value => last_seen_id])
-      batch.process!
     end
 
     def sleep_until_table_active

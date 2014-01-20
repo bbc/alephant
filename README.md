@@ -30,7 +30,22 @@ gem install alephant
 In your application:
 ```rb
 require 'alephant'
+opts = {
+  :s3_bucket_id => 'bucket-id',
+  :s3_object_path => 'path/to/object',
+  :s3_object_id => 'object_id',
+  :table_name => 'your_dynamo_db_table',
+  :sqs_queue_id => 'https://your_amazon_sqs_queue_url',
+  :view_id => 'my_view_id',
+  :sequential_proc => Proc.new { |last_seen_id, data|
+    last_seen_id < data["sequence_id"].to_i
+  },
+  :set_last_seen_proc => Proc.new { |data|
+    data["sequence_id"].to_i
+  }
+}
 
-Alephant.run('your_cache_id')
+thread = Alephant::Alephant.new(opts).run!
+thread.join
 ```
 
