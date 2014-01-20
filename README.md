@@ -7,6 +7,8 @@ Static publishing to S3 on push notification from SQS
 
 [![Build Status](https://travis-ci.org/BBC-News/alephant.png?branch=master)](https://travis-ci.org/BBC-News/alephant)
 
+[![Dependency Status](https://gemnasium.com/BBC-News/alephant.png)](https://gemnasium.com/BBC-News/alephant)
+
 [![Gem Version](https://badge.fury.io/rb/alephant.png)](http://badge.fury.io/rb/alephant)
 
 ##Dependencies
