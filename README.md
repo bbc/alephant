@@ -12,7 +12,10 @@ Static publishing to S3 on push notification from SQS
 ##Dependencies
 
 - JRuby 1.7.8
-- An AWS account
+- An AWS account (you'll need to create):
+  - An S3 bucket
+  - An SQS Queue
+  - A Dynamo DB table (optional, will attempt to create if can't be found)
 
 ##Setup
 
@@ -47,5 +50,47 @@ opts = {
 
 thread = Alephant::Alephant.new(opts).run!
 thread.join
+```
+
+Provide a view in a folder:
+
+```
+└── views
+    ├── models
+    │   └── foo.rb
+    └── templates
+        └── foo.mustache
+```
+
+**SQS Message Format**
+
+```json
+{
+  "content": "hello world",
+  "sequential_id": 1
+}
+```
+
+**foo.rb**
+```rb
+module MyApp
+  module Views
+    class Foo < Alephant::Views::Base
+      def content
+        @data['content']
+      end
+    end
+  end
+end
+```
+
+**foo.mustache**
+```mustache
+{{content}}
+```
+
+**S3 Output**
+```
+hello world
 ```
 
