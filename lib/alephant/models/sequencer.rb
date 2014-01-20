@@ -26,7 +26,6 @@ module Alephant
       begin
         sleep_until_table_active
       rescue AWS::DynamoDB::Errors::ResourceNotFoundException
-        puts "CREATING TABLE: #{@table_name}"
         @table = dynamo_db.tables.create(
           @table_name,
           @table_conf[:read_units],

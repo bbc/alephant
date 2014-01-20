@@ -4,14 +4,13 @@ describe Alephant::Sequencer do
   subject { Alephant::Sequencer }
 
   describe "initialize(opts, id)" do
-    it "sets @id, @table_name and @table_conf" do
-      sleep_until_table_active = double()
-
-      Alephant::Sequencer.any_instance.stub(:sleep_until_table_active)
-
+    before(:each) do
       AWS::DynamoDB.any_instance.stub(:initialize).and_return({
         :tables => :table_name
       })
+    end
+    it "sets @id, @table_name and @table_conf" do
+      Alephant::Sequencer.any_instance.stub(:sleep_until_table_active)
 
       instance = subject.new({
         :table_name => :table_name,
@@ -23,8 +22,14 @@ describe Alephant::Sequencer do
       expect(instance.table_conf).to eq(:table_conf)
     end
 
-    it "calls sleep_until_table_active() until table created" do
-      pending
+    context "sleep_until_table_active raises" do
+      context "AWS::DynamoDB::Errors::ResourceNotFoundException" do
+        it "dynamo_db.tables.create(@table_name, opts) then sleep_until_table_active" do
+          Alephant::Sequencer.any_instance.stub(:sleep_until_table_active).and_raise(AWS::DynamoDB::Errors::ResourceNotFoundException)
+
+          pending
+        end
+      end
     end
   end
 
