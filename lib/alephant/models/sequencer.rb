@@ -55,7 +55,6 @@ module Alephant
       batch.process!
     end
 
-    private
     def get_last_seen
       begin
         @table.batch_get(

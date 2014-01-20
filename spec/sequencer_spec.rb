@@ -76,16 +76,16 @@ describe Alephant::Sequencer do
 
         instance = subject.new
 
-        test = instance.sequential?(:data) do |last_seen, data|
+        in_sequence = instance.sequential?(:data) do |last_seen, data|
           :foo
         end
 
-        expect(test).to eq(:foo)
+        expect(in_sequence).to eq(:foo)
       end
     end
 
     context "block_given? == false" do
-      context "get_last_seen < data[:sequence_id]" do
+      context "get_last_seen < data['sequence_id']" do
         it "returns true" do
           Alephant::Sequencer
             .any_instance
@@ -94,13 +94,13 @@ describe Alephant::Sequencer do
 
           instance = subject.new
 
-          data = { :sequence_id => 1 }
+          data = { "sequence_id" => "1" }
 
           expect(instance.sequential? data).to be(true)
         end
       end
 
-      context "get_last_seen >= data[:sequence_id]" do
+      context "get_last_seen >= data['sequence_id']" do
         it "returns false" do
           Alephant::Sequencer
             .any_instance
@@ -109,7 +109,7 @@ describe Alephant::Sequencer do
 
           instance = subject.new
 
-          data = { :sequence_id => 0 }
+          data = { "sequence_id" => "0" }
 
           expect(instance.sequential? data).to be(false)
         end
