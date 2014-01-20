@@ -121,12 +121,69 @@ describe Alephant::Alephant do
         :sqs_queue_id => :sqs_queue_id
       })
 
-      instance.should_receive(:receive)
+      instance.should_receive(:receive).with(:msg)
 
       expect_any_instance_of(Alephant::Queue).to receive(:poll).and_yield(:msg)
 
       t = instance.run!
       t.join
+    end
+  end
+
+  describe "receive(msg)" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "takes json as an argument" do
+      instance = subject.new
+
+      expect { instance.receive('notjson') }.to raise_error(JSON::ParserError);
+    end
+
+    it "writes data to cache if sequential order is true" do
+      data = "{ \"foo\":\"bar\" }"
+
+      instance = subject.new
+
+      Alephant::Sequencer.any_instance.stub(:sequential?).and_return(true)
+      Alephant::Sequencer.any_instance.stub(:set_last_seen)
+
+      instance.should_receive(:write).with(JSON.parse(data))
+      instance.receive(data)
+    end
+  end
+
+  describe "write(data)" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "puts rendered data into the S3 Cache" do
+      Alephant::Cache.any_instance.should_receive(:put).with(:s3_object_id, :content)
+      Alephant::Renderer.any_instance.stub(:render).and_return(:content)
+
+      instance = subject.new({
+        :s3_object_id => :s3_object_id
+      })
+
+      instance.write(:content)
     end
   end
 end

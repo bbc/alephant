@@ -18,15 +18,14 @@ module Alephant
     end
 
     def initialize(opts, id)
-      @table = AWS::DynamoDB.new.tables[@table_name]
+      @id = id
       @table_name = opts[:table_name]
       @table_conf = opts[:table_conf] || table_conf_defaults
-      @id = id
+      @table = AWS::DynamoDB.new.tables[@table_name]
 
       begin
         sleep_until_table_active
       rescue AWS::DynamoDB::Errors::ResourceNotFoundException
-        puts "CREATING TABLE: #{@table_name}"
         @table = dynamo_db.tables.create(
           @table_name,
           @table_conf[:read_units],
@@ -68,7 +67,6 @@ module Alephant
       batch.process!
     end
 
-    private
     def sleep_until_table_active
       sleep 1 until @table.status == :active
     end
