@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "pry"
+  s.add_development_dependency "pry-remote"
+  s.add_development_dependency "pry-nav"
 
   s.add_runtime_dependency 'aws-sdk', '~> 1.0'
   s.add_runtime_dependency 'mustache', '>= 0.99.5'
