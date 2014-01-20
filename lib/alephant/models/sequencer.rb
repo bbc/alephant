@@ -18,10 +18,12 @@ module Alephant
     end
 
     def initialize(opts, id)
+      dynamo_db = AWS::DynamoDB.new
+
       @id = id
       @table_name = opts[:table_name]
       @table_conf = opts[:table_conf] || table_conf_defaults
-      @table = AWS::DynamoDB.new.tables[@table_name]
+      @table = dynamo_db.tables[@table_name]
 
       begin
         sleep_until_table_active
