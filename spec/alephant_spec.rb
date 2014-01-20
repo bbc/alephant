@@ -145,12 +145,16 @@ describe Alephant::Alephant do
 
     it "takes json as an argument" do
       instance = subject.new
+      msg = double()
+      msg.stub(:body).and_return('notjson')
 
-      expect { instance.receive('notjson') }.to raise_error(JSON::ParserError);
+      expect { instance.receive(msg) }.to raise_error(JSON::ParserError);
     end
 
     it "writes data to cache if sequential order is true" do
       data = "{ \"foo\":\"bar\" }"
+      msg = double()
+      msg.stub(:body).and_return(data)
 
       instance = subject.new
 
@@ -158,7 +162,7 @@ describe Alephant::Alephant do
       Alephant::Sequencer.any_instance.stub(:set_last_seen)
 
       instance.should_receive(:write).with(JSON.parse(data))
-      instance.receive(data)
+      instance.receive(msg)
     end
   end
 

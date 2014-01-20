@@ -18,10 +18,12 @@ module Alephant
     end
 
     def initialize(opts, id)
+      dynamo_db = AWS::DynamoDB.new
+
       @id = id
       @table_name = opts[:table_name]
       @table_conf = opts[:table_conf] || table_conf_defaults
-      @table = AWS::DynamoDB.new.tables[@table_name]
+      @table = dynamo_db.tables[@table_name]
 
       begin
         sleep_until_table_active
@@ -41,8 +43,16 @@ module Alephant
       if block_given?
         yield(get_last_seen, data)
       else
-        get_last_seen < data[:sequence_id]
+        get_last_seen < data["sequence_id"].to_i
       end
+    end
+
+    def set_last_seen(data)
+      last_seen_id = block_given? ? yield(data) : data["sequence_id"]
+
+      batch = AWS::DynamoDB::BatchWrite.new
+      batch.put(@table_name, [:key => @id,:value => last_seen_id])
+      batch.process!
     end
 
     def get_last_seen
@@ -57,14 +67,6 @@ module Alephant
       rescue
         0
       end
-    end
-
-    def set_last_seen(data)
-      last_seen_id = block_given? ? yield(data) : data[:sequence_id]
-
-      batch = AWS::DynamoDB::BatchWrite.new
-      batch.put(@table_name, [:key => @id,:value => last_seen_id])
-      batch.process!
     end
 
     def sleep_until_table_active

@@ -55,7 +55,7 @@ module Alephant
     end
 
     def receive(msg)
-      data = parse(msg)
+      data = parse(msg.body)
 
       if @sequencer.sequential?(data, &@sequential_proc)
         write data
