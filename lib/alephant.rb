@@ -24,6 +24,7 @@ module Alephant
       :table_name,
       :sqs_queue_id,
       :view_id,
+      :view_path,
       :sequential_proc,
       :set_last_seen_proc
     ]
@@ -40,7 +41,7 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @renderer = Renderer.new(@view_id)
+      @renderer = Renderer.new(@view_id, @view_path)
     end
 
     def parse(msg)

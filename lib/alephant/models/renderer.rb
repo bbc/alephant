@@ -7,8 +7,9 @@ module Alephant
 
     attr_reader :id
 
-    def initialize(id)
+    def initialize(id, view_base_path=nil)
       @id = id
+      self.base_path = view_base_path unless view_base_path.nil?
     end
 
     def render(data)
