@@ -86,12 +86,23 @@ describe Alephant::Alephant do
 
     context "initializes @renderer" do
       it "with Renderer.new(@view_id)" do
-        Alephant::Renderer.should_receive(:new).with(:view_id)
+        Alephant::Renderer.should_receive(:new).with(:view_id, nil)
 
         instance = subject.new({
-          :view_id => :view_id
+          :view_id => :view_id,
+          :view_path => nil
         })
       end
+
+      it "with Renderer.new(@view_id, @view_path)" do
+        Alephant::Renderer.should_receive(:new).with(:view_id, :view_path)
+
+        instance = subject.new({
+          :view_id => :view_id,
+          :view_path => :view_path
+        })
+      end
+
     end
   end
 

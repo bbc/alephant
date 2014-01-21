@@ -4,9 +4,16 @@ describe Alephant::Renderer do
   let(:id) { :id }
   subject { Alephant::Renderer }
 
-  describe "id=" do
-    it "sets the attribute id" do
-      expect(subject.new(id).id).to eq(id)
+  describe "initialize(id, view_base_path=nil)" do
+    context "id = :id" do
+      it "sets the attribute id" do
+        expect(subject.new(id).id).to eq(id)
+      end
+      context "view_base_path = '.'" do
+        it "sets base_path" do
+          expect(subject.new(id,'.').base_path).to eq('.')
+        end
+      end
     end
   end
 
@@ -79,9 +86,9 @@ describe Alephant::Renderer do
 
   describe "base_path" do
     it "should return DEFAULT_LOCATION" do
-    expect(subject.new(id).base_path).to eq(
-      Alephant::Renderer::DEFAULT_LOCATION
-    )
+      expect(subject.new(id).base_path).to eq(
+        Alephant::Renderer::DEFAULT_LOCATION
+      )
     end
 
     context "base_path = '.'" do
