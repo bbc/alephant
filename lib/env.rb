@@ -3,7 +3,7 @@ require 'yaml'
 
 require 'alephant/util/string'
 
-config_file = File.join("config", "aws.yml")
+config_file = File.join('config', 'aws.yaml')
 
 if File.exists? config_file
   config = YAML.load(File.read(config_file))
