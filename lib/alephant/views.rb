@@ -1,6 +1,6 @@
-module Alephant::Views
-  autoload :Base, 'alephant/views/base'
+require 'alephant/views/base'
 
+module Alephant::Views
   @@views = {}
 
   def self.register(klass)
