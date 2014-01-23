@@ -5,6 +5,7 @@ require 'json'
 
 require_relative 'env'
 
+require 'alephant/models/logger'
 require 'alephant/models/queue'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
@@ -29,7 +30,8 @@ module Alephant
       :set_last_seen_proc
     ]
 
-    def initialize(opts = {})
+    def initialize(opts = {}, logger = nil)
+      set_logger(logger)
       set_opts(opts)
 
       @sequencer = Sequencer.new(
@@ -42,6 +44,10 @@ module Alephant
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
       @renderer = Renderer.new(@view_id, @view_path)
+    end
+
+    def set_logger(logger)
+      ::Alephant.logger = logger
     end
 
     def parse(msg)
