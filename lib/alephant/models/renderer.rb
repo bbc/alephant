@@ -38,8 +38,7 @@ module Alephant
     end
 
     def model(id, data)
-      model_location =
-        File.join(base_path,'models',"#{id}.rb")
+      model_location = File.join(base_path, 'models', "#{id}.rb")
 
       begin
         require model_location
@@ -55,8 +54,7 @@ module Alephant
     end
 
     def template(id)
-      template_location =
-        File.join(base_path,'templates',"#{id}.mustache")
+      template_location = File.join(base_path,'templates',"#{id}.mustache")
       begin
         @logger.info("Renderer.template: #{template_location}")
         File.open(template_location).read
