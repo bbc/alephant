@@ -8,11 +8,16 @@ module Alephant
     attr_reader :id
 
     def initialize(id, view_base_path=nil)
+      @logger = ::Alephant.logger
+
       @id = id
       self.base_path = view_base_path unless view_base_path.nil?
+
+      @logger.info("Renderer.initialize: end with self.base_path set to #{self.base_path}")
     end
 
     def render(data)
+      @logger.info("Renderer.render: rendered template with id #{id} and data #{data}")
       Mustache.render(
         template(@id),
         model(@id,data)
@@ -27,6 +32,7 @@ module Alephant
       if File.directory?(path)
         @base_path = path
       else
+        @logger.error("Renderer.base_path=(path): error of invalid view path #{path}")
         raise Errors::InvalidViewPath
       end
     end
@@ -38,10 +44,13 @@ module Alephant
       begin
         require model_location
         klass = ::Alephant::Views.get_registered_class(id)
+        @logger.info("Renderer.model: klass set to #{klass}")
       rescue Exception => e
+        @logger.error("Renderer.model: view model with id #{id} not found")
         raise Errors::ViewModelNotFound
       end
 
+      @logger.info("Renderer.model: creating new klass with data #{data}")
       klass.new(data)
     end
 
@@ -49,8 +58,10 @@ module Alephant
       template_location =
         File.join(base_path,'templates',"#{id}.mustache")
       begin
+        @logger.info("Renderer.template: #{template_location}")
         File.open(template_location).read
       rescue Exception => e
+        @logger.error("Renderer.template: view tempalte with id #{id} not found")
         raise Errors::ViewTemplateNotFound
       end
     end

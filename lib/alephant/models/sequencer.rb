@@ -18,6 +18,8 @@ module Alephant
     end
 
     def initialize(opts, id)
+      @logger = ::Alephant.logger
+
       dynamo_db = AWS::DynamoDB.new
 
       @id = id
@@ -28,6 +30,8 @@ module Alephant
       begin
         sleep_until_table_active
       rescue AWS::DynamoDB::Errors::ResourceNotFoundException
+        @logger.error("Sequencer.initialize: DynamoDB resource was not found.")
+
         @table = dynamo_db.tables.create(
           @table_name,
           @table_conf[:read_units],
@@ -35,8 +39,12 @@ module Alephant
           @table_conf[:schema]
         )
 
+        @logger.info("Sequencer.initialize: Creating table with name #{@table_name}, read units #{@table_conf[:read_units]}, write units #{@table_conf[:write_units]}, schema #{@table_conf[:schema]}")
+
         sleep_until_table_active
       end
+
+      @logger.info("Sequencer.initialize: end with id #{@id}")
     end
 
     def sequential?(data)
@@ -53,6 +61,7 @@ module Alephant
       batch = AWS::DynamoDB::BatchWrite.new
       batch.put(@table_name, [:key => @id,:value => last_seen_id])
       batch.process!
+      @logger.info("Sequencer.set_last_seen: id #{id} and last_seen_id #{last_seen_id}")
     end
 
     def get_last_seen
@@ -65,6 +74,7 @@ module Alephant
           }
         ).first["value"].to_i
       rescue
+        @logger.error("Sequencer.get_last_seen: id #{id}")
         0
       end
     end
