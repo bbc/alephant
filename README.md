@@ -50,9 +50,13 @@ opts = {
   }
 }
 
-thread = Alephant::Alephant.new(opts).run!
+logger = Logger.new
+
+thread = Alephant::Alephant.new(opts, logger).run!
 thread.join
 ```
+
+logger is optional, and must confirm to the Ruby standard logger interface
 
 Provide a view in a folder:
 

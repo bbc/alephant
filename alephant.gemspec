@@ -7,7 +7,7 @@ require 'alephant/version'
 Gem::Specification.new do |s|
   s.name        = 'alephant'
   s.version     = Alephant::VERSION
-  s.date        = '2014-01-08'
+  s.date        = Time.now.strftime "%Y-%m-%d"
   s.summary     = "Static Publishing in the Cloud"
   s.description = "Static publishing to S3 based on SQS messages"
   s.authors     = ["Robert Kenny"]
