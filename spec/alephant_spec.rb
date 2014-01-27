@@ -164,7 +164,10 @@ describe Alephant::Alephant do
 
     it "writes data to cache if sequential order is true" do
       data = "{ \"foo\":\"bar\" }"
+
       msg = double()
+      msg.stub(:id).and_return(:id)
+      msg.stub(:md5).and_return(:md5)
       msg.stub(:body).and_return(data)
 
       instance = subject.new
