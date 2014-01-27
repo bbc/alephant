@@ -75,7 +75,7 @@ module Alephant
         ).first["value"].to_i
       rescue Exception => e
         trace = e.backtrace.join('\n')
-        @logger.error("Sequencer.get_last_seen ERROR: #{e.message}\n#{trace}")
+        @logger.error("Sequencer.get_last_seen: id #{id}\nmessage: #{e.message}\ntrace: #{trace}")
         0
       end
     end

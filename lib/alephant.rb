@@ -34,6 +34,7 @@ module Alephant
       set_logger(logger)
       set_opts(opts)
 
+      @logger = ::Alephant.logger
       @sequencer = Sequencer.new(
         {
           :table_name => @table_name
@@ -62,9 +63,9 @@ module Alephant
     end
 
     def receive(msg)
-      @logger.info("Alephant.receive: with id #{msg.id} and body digest #{msg.md5}")
-
       data = parse(msg.body)
+
+      @logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
 
       if @sequencer.sequential?(data, &@sequential_proc)
         write data
