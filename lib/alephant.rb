@@ -62,11 +62,15 @@ module Alephant
     end
 
     def receive(msg)
+      @logger.info("Alephant.receive: with id #{msg.id} and body digest #{msg.md5}")
+
       data = parse(msg.body)
 
       if @sequencer.sequential?(data, &@sequential_proc)
         write data
         @sequencer.set_last_seen(data, &@set_last_seen_proc)
+      else
+        @logger.warn("Alephant.receive: out of sequence message recieved #{msg.id} (discarded)")
       end
     end
 
