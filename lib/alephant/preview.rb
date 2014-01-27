@@ -6,6 +6,5 @@ module Alephant
       'hello world'
     end
 
-    run!
   end
 end

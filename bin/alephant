@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'trollop'
+
+root = Pathname.new(__FILE__).dirname.parent
+lib_path = (root + 'lib').realdirpath
+
+$LOAD_PATH.unshift(lib_path)
+
+require 'alephant'
+require 'alephant/tasks'
+
+SUB_COMMANDS = %w(preview)
+global_opts = Trollop::options do
+  banner <<-EOS
+Static publishing to S3 based on SQS messages
+Usage:
+    alephant preview # Runs preview server
+EOS
+  stop_on SUB_COMMANDS
+end
+
+cmd = ARGV.shift # get the subcommand
+cmd_opts = case cmd
+  when "preview"
+    Trollop::options do
+      opt :foo, "Foo"
+    end
+  else
+    Trollop::die "unknown subcommand #{cmd.inspect}"
+  end
+
+#puts "Global options: #{global_opts.inspect}"
+#puts "Subcommand: #{cmd.inspect}"
+#puts "Subcommand options: #{cmd_opts.inspect}"
+#puts "Remaining arguments: #{ARGV.inspect}"
+
+case cmd
+  when "preview"
+  Rake::Task['alephant:preview'].invoke
+end
+
