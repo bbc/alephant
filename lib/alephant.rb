@@ -70,7 +70,7 @@ module Alephant
         write data
         @sequencer.set_last_seen(data, &@set_last_seen_proc)
       else
-        @logger.warn("Alephant.receive: out of sequence message recieved #{msg.id} (discarded)")
+        @logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
       end
     end
 
