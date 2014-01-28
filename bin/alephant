@@ -22,22 +22,15 @@ EOS
 end
 
 cmd = ARGV.shift # get the subcommand
-cmd_opts = case cmd
-  when "preview"
-    Trollop::options do
-      opt :foo, "Foo"
-    end
-  else
-    Trollop::die "unknown subcommand #{cmd.inspect}"
-  end
-
-#puts "Global options: #{global_opts.inspect}"
-#puts "Subcommand: #{cmd.inspect}"
-#puts "Subcommand options: #{cmd_opts.inspect}"
-#puts "Remaining arguments: #{ARGV.inspect}"
-
 case cmd
-  when "preview"
-  Rake::Task['alephant:preview'].invoke
+when "preview"
+  Trollop::options do
+    opt :foo, "Foo"
+  end
+  Rake::Task['alephant:preview:go'].invoke
+when "update"
+  Rake::Task['alephant:preview:update'].invoke
+else
+  Trollop::die "unknown subcommand #{cmd.inspect}"
 end
 
