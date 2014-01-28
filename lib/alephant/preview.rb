@@ -1,12 +1,12 @@
 require 'sinatra/base'
 require 'alephant/models/renderer'
+require 'alephant/views/preview'
 require 'json'
-
 
 module Alephant
   class Preview < Sinatra::Base
 
-    get '/preview/:id/?:fixture?' do
+    get '/preview/:id/:region/?:fixture?' do
       render_preview
     end
 
@@ -15,9 +15,11 @@ module Alephant
     end
 
     def render_preview
-      c = render_component
+      p = Views::Preview.new
+      p.regions[region] = render_component
+      p.template_file = preview_template_location
 
-      "preview"
+      p.render
     end
 
     def render_component
@@ -25,6 +27,10 @@ module Alephant
     end
 
     private
+    def region
+      params['region']
+    end
+
     def id
       params['id']
     end
@@ -43,6 +49,10 @@ module Alephant
 
     def fixture_location
       "#{base_path}/fixtures/#{fixture}.json"
+    end
+
+    def preview_template_location
+      "#{base_path}/templates/preview.mustache"
     end
   end
 end
