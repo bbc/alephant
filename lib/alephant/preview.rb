@@ -15,11 +15,10 @@ module Alephant
     end
 
     def render_preview
-      p = Views::Preview.new
-      p.regions[region] = render_component
-      p.template_file = preview_template_location
-
-      p.render
+      Views::Preview.new(
+        { region => render_component },
+        preview_template_location
+      ).render
     end
 
     def render_component

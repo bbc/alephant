@@ -5,8 +5,9 @@ module Alephant
     class Preview < Mustache
       attr_accessor :regions
 
-      def initialize
-        @regions={}
+      def initialize(regions, template_location)
+        @regions=regions
+        self.template_file = template_location
       end
 
       def static_host
