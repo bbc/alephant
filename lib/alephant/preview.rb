@@ -5,12 +5,19 @@ require 'json'
 
 module Alephant
   class Preview < Sinatra::Base
-    get '/preview/:id/:fixture?' do
-      "preview"
+
+    get '/preview/:id/?:fixture?' do
+      render_preview
     end
 
-    get '/component/:id/:fixture?' do
+    get '/component/:id/?:fixture?' do
       render_component
+    end
+
+    def render_preview
+      c = render_component
+
+      "preview"
     end
 
     def render_component
