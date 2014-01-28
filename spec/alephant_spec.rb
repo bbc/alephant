@@ -175,8 +175,32 @@ describe Alephant::Alephant do
       Alephant::Sequencer.any_instance.stub(:sequential?).and_return(true)
       Alephant::Sequencer.any_instance.stub(:set_last_seen)
 
-      instance.should_receive(:write).with(JSON.parse(data))
+      instance.should_receive(:write).with(JSON.parse(data, :symbolize_names => true))
       instance.receive(msg)
+    end
+  end
+
+  describe "parse(msg)" do
+    before(:each) do
+      sequencer = double()
+      queue     = double()
+      cache     = double()
+      renderer  = double()
+
+      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
+      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+    end
+
+    it "should return keys as symbols" do
+      data = "{ \"foo\":\"bar\" }"
+
+      instance = subject.new.parse data
+      key = instance.keys[0]
+
+      key.should be_a Symbol
+      instance[key].should eq 'bar'
     end
   end
 
