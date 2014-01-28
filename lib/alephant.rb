@@ -52,7 +52,7 @@ module Alephant
     end
 
     def parse(msg)
-      JSON.parse(msg, { :symbolize_names => true })
+      JSON.parse(msg, :symbolize_names => true)
     end
 
     def write(data)

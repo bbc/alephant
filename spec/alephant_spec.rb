@@ -175,7 +175,7 @@ describe Alephant::Alephant do
       Alephant::Sequencer.any_instance.stub(:sequential?).and_return(true)
       Alephant::Sequencer.any_instance.stub(:set_last_seen)
 
-      instance.should_receive(:write).with(JSON.parse(data, { :symbolize_names => true }))
+      instance.should_receive(:write).with(JSON.parse(data, :symbolize_names => true))
       instance.receive(msg)
     end
   end
