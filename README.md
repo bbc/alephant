@@ -123,8 +123,8 @@ the retrieved html.
 **Environment Variables**
 
 ```sh
-STATIC_HOST_REGEX="static.(sandbox.dev|int|test|stage|live).bbc(i)?.co.uk\/news\/(dev|[^\/]+)"
-PREVIEW_TEMPLATE_URL="http://pal.sandbox.dev.bbc.co.uk/news/layout/template"
+STATIC_HOST_REGEX="static.(sandbox.dev|int|test|stage|live).yourapp(i)?.com\/"
+PREVIEW_TEMPLATE_URL="http://yourapp.com/template"
 ```
 
 `alephant update`
