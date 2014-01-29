@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'alephant/models/parser'
 require 'alephant/models/renderer'
 require 'alephant/views/preview'
 require 'faraday'
@@ -42,7 +43,15 @@ module Alephant
       end
 
       def fixture_data
-        JSON.parse(File.open(fixture_location).read)
+        parser.parse raw_fixture_data
+      end
+
+      def raw_fixture_data
+        File.open(fixture_location).read
+      end
+
+      def parser
+        @parser ||= Parser.new
       end
 
       def base_path

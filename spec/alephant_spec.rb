@@ -180,30 +180,6 @@ describe Alephant::Alephant do
     end
   end
 
-  describe "parse(msg)" do
-    before(:each) do
-      sequencer = double()
-      queue     = double()
-      cache     = double()
-      renderer  = double()
-
-      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
-      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
-      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
-    end
-
-    it "should return keys as symbols" do
-      data = "{ \"foo\":\"bar\" }"
-
-      instance = subject.new.parse data
-      key = instance.keys[0]
-
-      key.should be_a Symbol
-      instance[key].should eq 'bar'
-    end
-  end
-
   describe "write(data)" do
     before(:each) do
       sequencer = double()
