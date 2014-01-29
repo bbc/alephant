@@ -1,5 +1,3 @@
-$: << File.dirname(__FILE__)
-
 require 'aws-sdk'
 require 'json'
 
@@ -9,6 +7,7 @@ require 'alephant/models/logger'
 require 'alephant/models/queue'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
+require 'alephant/models/multi_renderer'
 require 'alephant/models/sequencer'
 
 require 'alephant/errors'
@@ -30,7 +29,7 @@ module Alephant
       :set_last_seen_proc
     ]
 
-    def initialize(opts = {}, logger = nil)
+    def initialize(opts = {}, logger = nil, multiples = nil)
       set_logger(logger)
       set_opts(opts)
 
@@ -44,7 +43,12 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @renderer = Renderer.new(@view_id, @view_path)
+
+      if multiples.nil?
+        @renderer = Renderer.new(@view_id, @view_path)
+      else
+        MultiRenderer.new(@view_path)
+      end
     end
 
     def set_logger(logger)

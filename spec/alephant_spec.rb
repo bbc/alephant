@@ -85,24 +85,35 @@ describe Alephant::Alephant do
     end
 
     context "initializes @renderer" do
-      it "with Renderer.new(@view_id)" do
-        Alephant::Renderer.should_receive(:new).with(:view_id, nil)
+      context "multiples argument not provided" do
+        it "with Renderer.new(@view_id)" do
+          Alephant::Renderer.should_receive(:new).with(:view_id, nil)
 
-        instance = subject.new({
-          :view_id => :view_id,
-          :view_path => nil
-        })
+          instance = subject.new({
+            :view_id => :view_id,
+            :view_path => nil
+          })
+        end
+
+        it "with Renderer.new(@view_id, @view_path)" do
+          Alephant::Renderer.should_receive(:new).with(:view_id, :view_path)
+
+          instance = subject.new({
+            :view_id => :view_id,
+            :view_path => :view_path
+          })
+        end
       end
 
-      it "with Renderer.new(@view_id, @view_path)" do
-        Alephant::Renderer.should_receive(:new).with(:view_id, :view_path)
+      context "multiples argument provided" do
+        it "MultiRenderer class to be initialized" do
+          Alephant::MultiRenderer.should_receive(:new).with(:foo)
 
-        instance = subject.new({
-          :view_id => :view_id,
-          :view_path => :view_path
-        })
+          instance = subject.new({
+            :view_path => :foo
+          }, nil, true)
+        end
       end
-
     end
   end
 
