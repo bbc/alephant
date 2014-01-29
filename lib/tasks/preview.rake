@@ -1,17 +1,15 @@
-require 'alephant/preview'
-require_relative 'support/palpal'
+require 'alephant/preview/server'
+require 'alephant/preview/template'
 
 namespace :alephant do
   namespace :preview do
     task :go do
-      Alephant::Preview.run!
+      Alephant::Preview::Server.run!
     end
     task :update do
-      template_raw = PalPal::get_template
-      template_location = "#{Dir.pwd}/views/templates/preview.mustache"
-      File.open(template_location, 'w') { |file|
-        file.write(template_raw)
-      }
+      Alephant::Preview::Template.update(
+        "#{Dir.pwd}/views/templates/preview.mustache"
+      )
     end
   end
 end
