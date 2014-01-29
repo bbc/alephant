@@ -34,6 +34,7 @@ module Alephant
       set_logger(logger)
       set_opts(opts)
 
+      @logger = ::Alephant.logger
       @sequencer = Sequencer.new(
         {
           :table_name => @table_name
@@ -51,7 +52,7 @@ module Alephant
     end
 
     def parse(msg)
-      JSON.parse(msg)
+      JSON.parse(msg, :symbolize_names => true)
     end
 
     def write(data)
@@ -64,9 +65,13 @@ module Alephant
     def receive(msg)
       data = parse(msg.body)
 
+      @logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
+
       if @sequencer.sequential?(data, &@sequential_proc)
         write data
         @sequencer.set_last_seen(data, &@set_last_seen_proc)
+      else
+        @logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
       end
     end
 

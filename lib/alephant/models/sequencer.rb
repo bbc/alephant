@@ -73,8 +73,9 @@ module Alephant
             :consistent_read => true
           }
         ).first["value"].to_i
-      rescue
-        @logger.error("Sequencer.get_last_seen: id #{id}")
+      rescue Exception => e
+        trace = e.backtrace.join('\n')
+        @logger.error("Sequencer.get_last_seen: id #{id}\nmessage: #{e.message}\ntrace: #{trace}")
         0
       end
     end

@@ -16,7 +16,7 @@ module Alephant
 
     def put(id, data)
       @bucket.objects["#{@path}/#{id}"].write(data)
-      @logger.info("Cache.put: #{@path}/#{id} and write data #{data}")
+      @logger.info("Cache.put: #{@path}/#{id}")
     end
 
     def get(id)
