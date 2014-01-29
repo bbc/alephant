@@ -38,7 +38,7 @@ module Alephant
       end
 
       def fixture
-        params['fixture'] || params['id']
+        params['fixture'] || id
       end
 
       def fixture_data
