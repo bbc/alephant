@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "pry"
   s.add_development_dependency "pry-remote"
   s.add_development_dependency "pry-nav"
-  s.add_development_dependency "sinatra"
 
+  s.add_runtime_dependency 'sinatra'
   s.add_runtime_dependency 'faraday'
   s.add_runtime_dependency 'trollop'
   s.add_runtime_dependency 'rake'
