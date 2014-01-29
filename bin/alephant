@@ -17,6 +17,10 @@ global_opts = Trollop::options do
 Static publishing to S3 based on SQS messages
 Usage:
     alephant preview # Runs preview server
+    alephant update  # Attempts to update preview template
+      Dependent on the following environmen variables being set:
+      - STATIC_HOST_REGEX="static.(int|test|live).myhost.com"
+      - PREVIEW_TEMPLATE_URL"http://myapp.com/mustache_template"
 EOS
   stop_on SUB_COMMANDS
 end
