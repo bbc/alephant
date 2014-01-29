@@ -1,7 +1,6 @@
 $: << File.dirname(__FILE__)
 
 require 'aws-sdk'
-require 'json'
 
 require_relative 'env'
 
@@ -10,6 +9,7 @@ require 'alephant/models/queue'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/sequencer'
+require 'alephant/models/parser'
 
 require 'alephant/errors'
 require 'alephant/views'
@@ -45,14 +45,11 @@ module Alephant
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
       @renderer = Renderer.new(@view_id, @view_path)
+      @parser = Parser.new
     end
 
     def set_logger(logger)
       ::Alephant.logger = logger
-    end
-
-    def parse(msg)
-      JSON.parse(msg, :symbolize_names => true)
     end
 
     def write(data)
@@ -63,7 +60,7 @@ module Alephant
     end
 
     def receive(msg)
-      data = parse(msg.body)
+      data = @parser.parse msg.body
 
       @logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
 
