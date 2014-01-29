@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'trollop'
+
+root = Pathname.new(__FILE__).dirname.parent
+lib_path = (root + 'lib').realdirpath
+
+$LOAD_PATH.unshift(lib_path)
+
+require 'alephant'
+require 'alephant/tasks'
+
+SUB_COMMANDS = %w(preview)
+global_opts = Trollop::options do
+  banner <<-EOS
+Static publishing to S3 based on SQS messages
+Usage:
+    alephant preview # Runs preview server
+    alephant update  # Attempts to update preview template
+      Dependent on the following environmen variables being set:
+      - STATIC_HOST_REGEX="static.(int|test|live).myhost.com"
+      - PREVIEW_TEMPLATE_URL"http://myapp.com/mustache_template"
+EOS
+  stop_on SUB_COMMANDS
+end
+
+cmd = ARGV.shift # get the subcommand
+case cmd
+when "preview"
+  Rake::Task['alephant:preview:go'].invoke
+when "update"
+  Rake::Task['alephant:preview:update'].invoke
+else
+  Trollop::die "unknown subcommand #{cmd.inspect}"
+end
+

@@ -17,7 +17,7 @@ module Alephant
     end
 
     def render(data)
-      @logger.info("Renderer.render: rendered template with id #{id} and data #{data}")
+      @logger.info("Renderer.render: rendered template with id #{id}")
       Mustache.render(
         template(@id),
         model(@id,data)
