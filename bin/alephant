@@ -28,9 +28,6 @@ end
 cmd = ARGV.shift # get the subcommand
 case cmd
 when "preview"
-  Trollop::options do
-    opt :foo, "Foo"
-  end
   Rake::Task['alephant:preview:go'].invoke
 when "update"
   Rake::Task['alephant:preview:update'].invoke
