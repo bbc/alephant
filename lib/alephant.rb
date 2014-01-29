@@ -1,7 +1,6 @@
 $: << File.dirname(__FILE__)
 
 require 'aws-sdk'
-require 'json'
 
 require_relative 'env'
 
