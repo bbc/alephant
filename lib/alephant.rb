@@ -47,7 +47,8 @@ module Alephant
       if multiples.nil?
         @renderer = Renderer.new(@view_id, @view_path)
       else
-        MultiRenderer.new(@view_path)
+        @multiples = true
+        @multi_renderer = MultiRenderer.new(@view_path)
       end
     end
 
@@ -60,10 +61,14 @@ module Alephant
     end
 
     def write(data)
-      @cache.put(
-        @s3_object_id,
-        @renderer.render(data)
-      )
+      if @multiples
+        # @multi_renderer.render(data)
+      else
+        @cache.put(
+          @s3_object_id,
+          @renderer.render(data)
+        )
+      end
     end
 
     def receive(msg)
