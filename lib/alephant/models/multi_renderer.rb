@@ -1,9 +1,12 @@
 module Alephant
   class MultiRenderer
     DEFAULT_LOCATION = 'views'
+    DEFAULT_MODEL = 'example'
 
     def initialize(view_base_path=nil)
       self.base_path = view_base_path unless view_base_path.nil?
+
+      @logger = ::Alephant.logger
     end
 
     def base_path
@@ -21,21 +24,19 @@ module Alephant
     def render(data)
       model_object = model(data)
 
-      Dir.glob("#{@view_path}/templates/*").map do |file|
-        id = file.sub(/\.mustache/, '')
+      Dir.glob("#{base_path}/templates/*").reduce(Hash.new(0)) do |obj, file|
+        id = file.split('/').last.sub(/\.mustache/, '')
 
-        {
-          id.to_sym => ::Alephant::Renderer.new(id, base_path, model_object).render(data)
-        }
+        obj.tap { |o| o[id.to_sym] = ::Alephant::Renderer.new(id, base_path, model_object).render.chomp! }
       end
     end
 
     def model(data)
-      model_location = File.join(base_path, 'models', 'default.rb')
+      model_location = File.join(base_path, 'models', "#{DEFAULT_MODEL}.rb")
 
       begin
         require model_location
-        klass = ::Alephant::Views.get_registered_class(id)
+        klass = ::Alephant::Views.get_registered_class(DEFAULT_MODEL)
         @logger.info("Renderer.model: klass set to #{klass}")
       rescue Exception => e
         @logger.error("Renderer.model: view model with id #{id} not found")
