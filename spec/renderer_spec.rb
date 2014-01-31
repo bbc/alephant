@@ -17,7 +17,7 @@ describe Alephant::Renderer do
     end
   end
 
-  describe "template(id)" do
+  describe "template()" do
     let(:id) { 'example' }
     it "returns the template" do
       instance = subject.new(id)
@@ -27,7 +27,7 @@ describe Alephant::Renderer do
         'views'
       )
 
-      template = instance.template(id)
+      template = instance.template
       expect(template).to eq("{{content}}\n")
     end
 
@@ -42,7 +42,7 @@ describe Alephant::Renderer do
         )
 
         expect {
-          instance.template(id)
+          instance.template
         }.to raise_error(
           Alephant::Errors::ViewTemplateNotFound
         )
@@ -50,7 +50,7 @@ describe Alephant::Renderer do
     end
   end
 
-  describe "model(id, data)" do
+  describe "model(data)" do
     let(:id) { 'example' }
     let(:data) { { :key => :value } }
     it "returns the model" do
@@ -61,7 +61,7 @@ describe Alephant::Renderer do
         'views'
       )
 
-      model = instance.model(id, data)
+      model = instance.model(data)
       model.should be_an Alephant::Views::Base
       expect(model.data).to eq(data)
     end
@@ -76,7 +76,7 @@ describe Alephant::Renderer do
           'views'
         )
         expect {
-          instance.model(id, data)
+          instance.model(data)
         }.to raise_error(
           Alephant::Errors::ViewModelNotFound
         )
@@ -129,9 +129,9 @@ describe Alephant::Renderer do
       Mustache.any_instance.stub(:render)
         .with(:template, :model).and_return(:content)
       Alephant::Renderer.any_instance.stub(:template)
-        .with(id).and_return(:template)
+        .and_return(:template)
       Alephant::Renderer.any_instance.stub(:model)
-        .with(id, :data).and_return(:model)
+        .with(:data).and_return(:model)
 
       expect(subject.new(id).render(:data)).to eq(:content)
     end

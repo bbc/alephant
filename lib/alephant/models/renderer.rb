@@ -18,9 +18,10 @@ module Alephant
 
     def render(data)
       @logger.info("Renderer.render: rendered template with id #{id}")
+
       Mustache.render(
-        template(@id),
-        model(@id,data)
+        template,
+        model(data)
       )
     end
 
@@ -37,7 +38,7 @@ module Alephant
       end
     end
 
-    def model(id, data)
+    def model(data)
       model_location = File.join(base_path, 'models', "#{id}.rb")
 
       begin
@@ -50,11 +51,13 @@ module Alephant
       end
 
       @logger.info("Renderer.model: creating new klass with data #{data}")
+
       klass.new(data)
     end
 
-    def template(id)
+    def template
       template_location = File.join(base_path,'templates',"#{id}.mustache")
+
       begin
         @logger.info("Renderer.template: #{template_location}")
         File.open(template_location).read
