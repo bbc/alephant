@@ -29,7 +29,7 @@ describe Alephant::Renderer do
   end
 
   describe "template()" do
-    let(:id) { 'example' }
+    let(:id) { 'foo' }
     it "returns the template" do
       instance = subject.new(id, @base_path, model)
       template = instance.template
