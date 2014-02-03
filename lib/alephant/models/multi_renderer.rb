@@ -1,11 +1,10 @@
 module Alephant
   class MultiRenderer
     DEFAULT_LOCATION = 'views'
-    DEFAULT_MODEL = 'example'
 
-    def initialize(view_base_path=nil)
+    def initialize(model_file, view_base_path=nil)
       self.base_path = view_base_path unless view_base_path.nil?
-
+      @model_file = model_file
       @logger = ::Alephant.logger
     end
 
@@ -25,21 +24,21 @@ module Alephant
       model_object = model(data)
 
       Dir.glob("#{base_path}/templates/*").reduce(Hash.new(0)) do |obj, file|
-        id = file.split('/').last.sub(/\.mustache/, '')
+        template_file = file.split('/').last.sub(/\.mustache/, '')
 
-        obj.tap { |o| o[id.to_sym] = ::Alephant::Renderer.new(id, base_path, model_object).render.chomp! }
+        obj.tap { |o| o[template_file.to_sym] = ::Alephant::Renderer.new(template_file, base_path, model_object).render.chomp! }
       end
     end
 
     def model(data)
-      model_location = File.join(base_path, 'models', "#{DEFAULT_MODEL}.rb")
+      model_location = File.join(base_path, 'models', "#{@model_file}.rb")
 
       begin
         require model_location
-        klass = ::Alephant::Views.get_registered_class(DEFAULT_MODEL)
+        klass = ::Alephant::Views.get_registered_class(@model_file)
         @logger.info("Renderer.model: klass set to #{klass}")
       rescue Exception => e
-        @logger.error("Renderer.model: view model with id #{id} not found")
+        @logger.error("Renderer.model: exeception #{e.message}")
         raise Errors::ViewModelNotFound
       end
 
