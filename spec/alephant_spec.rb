@@ -190,8 +190,8 @@ describe Alephant::Alephant do
       instance = subject.new.parse data
       key = instance.keys[0]
 
-      key.should be_a Symbol
-      instance[key].should eq 'bar'
+      key.should be_a(Symbol)
+      instance[key].should eq('bar')
     end
   end
 
