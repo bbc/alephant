@@ -6,15 +6,15 @@ describe Alephant::Alephant do
 
   describe "initialize(opts = {})" do
     before(:each) do
-      sequencer = double()
-      queue     = double()
-      cache     = double()
-      renderer  = double()
+      sequencer      = double()
+      queue          = double()
+      cache          = double()
+      multi_renderer = double()
 
       Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+      Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
     end
 
     it "sets specified options" do
@@ -102,15 +102,15 @@ describe Alephant::Alephant do
 
   describe "run!" do
     before(:each) do
-      sequencer = double()
-      queue     = double()
-      cache     = double()
-      renderer  = double()
+      sequencer      = double()
+      queue          = double()
+      cache          = double()
+      multi_renderer = double()
 
       Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+      Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
     end
 
     it "returns a Thread" do
@@ -137,15 +137,15 @@ describe Alephant::Alephant do
 
   describe "receive(msg)" do
     before(:each) do
-      sequencer = double()
-      queue     = double()
-      cache     = double()
-      renderer  = double()
+      sequencer      = double()
+      queue          = double()
+      cache          = double()
+      multi_renderer = double()
 
       Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+      Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
     end
 
     it "takes json as an argument" do
@@ -176,15 +176,15 @@ describe Alephant::Alephant do
 
   describe "parse(msg)" do
     before(:each) do
-      sequencer = double()
-      queue     = double()
-      cache     = double()
-      renderer  = double()
+      sequencer      = double()
+      queue          = double()
+      cache          = double()
+      multi_renderer = double()
 
       Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
+      Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
     end
 
     it "should return keys as symbols" do
@@ -202,13 +202,9 @@ describe Alephant::Alephant do
     before(:each) do
       sequencer = double()
       queue     = double()
-      cache     = double()
-      renderer  = double()
 
       Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
-      Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
-      Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)
     end
 
     it "puts rendered data into the S3 Cache" do
