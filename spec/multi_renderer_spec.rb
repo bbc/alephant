@@ -25,6 +25,16 @@ describe Alephant::MultiRenderer do
         expect(subject.new(model_file, '.').base_path).to eq('.')
       end
     end
+
+    context "view_base_path = invalid_path" do
+      it "should raise InvalidViewPath" do
+        expect {
+          instance = subject.new(model_file, './invalid_path')
+        }.to raise_error(
+          Alephant::Errors::InvalidViewPath
+        )
+      end
+    end
   end
 
   describe "render(data)" do

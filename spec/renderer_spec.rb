@@ -42,28 +42,6 @@ describe Alephant::Renderer do
     end
   end
 
-# describe "base_path=(path)" do
-  # context "base_path = valid_path" do
-  #   let(:valid_path) {'.'}
-  #   it "should set the base_path" do
-  #     instance = subject.new(template_file, valid_path, model)
-  #     expect(instance.base_path).to eq(valid_path)
-  #   end
-  # end
-
-  # context "base_path = invalid_path" do
-  #   let(:invalid_path) {'./invalid_path'}
-  #   it "should raise InvalidViewPath" do
-  #     instance = subject.new(template_file, base_path, model)
-  #     expect {
-  #       instance.base_path = invalid_path
-  #     }.to raise_error(
-  #       Alephant::Errors::InvalidViewPath
-  #     )
-  #   end
-  # end
-# end
-
   describe "render()" do
     it 'renders a template returned from template(template_file)' do
       Mustache
