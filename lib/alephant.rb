@@ -18,6 +18,7 @@ module Alephant
     attr_reader :sequencer, :queue, :cache, :renderer
 
     VALID_OPTS = [
+      :model_file,
       :s3_bucket_id,
       :s3_object_path,
       :s3_object_id,
@@ -29,7 +30,7 @@ module Alephant
       :set_last_seen_proc
     ]
 
-    def initialize(opts = {}, logger = nil, multiples = nil)
+    def initialize(opts = {}, logger = nil)
       set_logger(logger)
       set_opts(opts)
 
@@ -43,13 +44,7 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-
-      if multiples.nil?
-        @renderer = Renderer.new(@view_id, @view_path)
-      else
-        @multiples = true
-        @multi_renderer = MultiRenderer.new(@view_path)
-      end
+      @multi_renderer = MultiRenderer.new(@model_file, @view_path)
     end
 
     def set_logger(logger)
@@ -61,13 +56,8 @@ module Alephant
     end
 
     def write(data)
-      if @multiples
-        # @multi_renderer.render(data)
-      else
-        @cache.put(
-          @s3_object_id,
-          @renderer.render(data)
-        )
+      @multi_renderer.render(data).each do |id, item|
+        @cache.put(id, item)
       end
     end
 

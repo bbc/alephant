@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Alephant::Alephant do
+  let(:model_file) { 'foo' }
   subject { Alephant::Alephant }
 
   describe "initialize(opts = {})" do
@@ -18,6 +19,7 @@ describe Alephant::Alephant do
 
     it "sets specified options" do
       instance = subject.new({
+        :model_file         => :model_file,
         :s3_bucket_id       => :s3_bucket_id,
         :s3_object_path     => :s3_object_path,
         :s3_object_id       => :s3_object_id,
@@ -28,6 +30,7 @@ describe Alephant::Alephant do
         :set_last_seen_proc => :set_last_seen_proc
       })
 
+      expect(instance.model_file).to eq(:model_file);
       expect(instance.s3_bucket_id).to eq(:s3_bucket_id);
       expect(instance.s3_object_path).to eq(:s3_object_path);
       expect(instance.s3_object_id).to eq(:s3_object_id);
@@ -41,6 +44,7 @@ describe Alephant::Alephant do
     it "sets unspecified options to nil" do
       instance = subject.new
 
+      expect(instance.model_file).to eq(nil);
       expect(instance.s3_bucket_id).to eq(nil);
       expect(instance.s3_object_path).to eq(nil);
       expect(instance.s3_object_id).to eq(nil);
@@ -84,35 +88,14 @@ describe Alephant::Alephant do
       end
     end
 
-    context "initializes @renderer" do
-      context "multiples argument not provided" do
-        it "with Renderer.new(@view_id)" do
-          Alephant::Renderer.should_receive(:new).with(:view_id, nil)
+    context "initializes @multi_renderer" do
+      it "MultiRenderer class to be initialized" do
+        Alephant::MultiRenderer.should_receive(:new).with(model_file, :foo)
 
-          instance = subject.new({
-            :view_id => :view_id,
-            :view_path => nil
-          })
-        end
-
-        it "with Renderer.new(@view_id, @view_path)" do
-          Alephant::Renderer.should_receive(:new).with(:view_id, :view_path)
-
-          instance = subject.new({
-            :view_id => :view_id,
-            :view_path => :view_path
-          })
-        end
-      end
-
-      context "multiples argument provided" do
-        it "MultiRenderer class to be initialized" do
-          Alephant::MultiRenderer.should_receive(:new).with(:foo)
-
-          instance = subject.new({
-            :view_path => :foo
-          }, nil, true)
-        end
+        instance = subject.new({
+          :model_file => model_file,
+          :view_path  => :foo
+        })
       end
     end
   end
@@ -229,8 +212,25 @@ describe Alephant::Alephant do
     end
 
     it "puts rendered data into the S3 Cache" do
-      Alephant::Cache.any_instance.should_receive(:put).with(:s3_object_id, :content)
-      Alephant::Renderer.any_instance.stub(:render).and_return(:content)
+      templates = {
+        :foo => 'content',
+        :bar => 'content'
+      }
+
+      Alephant::Cache
+        .any_instance
+        .should_receive(:put)
+        .with(:foo, templates[:foo])
+
+      Alephant::Cache
+        .any_instance
+        .should_receive(:put)
+        .with(:bar, templates[:bar])
+
+      Alephant::MultiRenderer
+        .any_instance
+        .stub(:render)
+        .and_return(templates)
 
       instance = subject.new({
         :s3_object_id => :s3_object_id
