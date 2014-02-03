@@ -26,7 +26,8 @@ module Alephant
       :sqs_queue_id,
       :view_path,
       :sequential_proc,
-      :set_last_seen_proc
+      :set_last_seen_proc,
+      :component_id
     ]
 
     def initialize(opts = {}, logger = nil)
@@ -43,7 +44,7 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @multi_renderer = MultiRenderer.new(@model_file, @view_path)
+      @multi_renderer = MultiRenderer.new(@model_file, "#{@view_path}/#{@component_id}")
       @parser = Parser.new
     end
 

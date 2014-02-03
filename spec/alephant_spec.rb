@@ -26,7 +26,8 @@ describe Alephant::Alephant do
         :table_name         => :table_name,
         :sqs_queue_id       => :sqs_queue_id,
         :sequential_proc    => :sequential_proc,
-        :set_last_seen_proc => :set_last_seen_proc
+        :set_last_seen_proc => :set_last_seen_proc,
+        :component_id       => :component_id
       })
 
       expect(instance.model_file).to eq(:model_file);
@@ -37,6 +38,7 @@ describe Alephant::Alephant do
       expect(instance.sqs_queue_id).to eq(:sqs_queue_id);
       expect(instance.sequential_proc).to eq(:sequential_proc);
       expect(instance.set_last_seen_proc).to eq(:set_last_seen_proc);
+      expect(instance.component_id).to eq(:component_id);
     end
 
     it "sets unspecified options to nil" do
@@ -50,6 +52,7 @@ describe Alephant::Alephant do
       expect(instance.sqs_queue_id).to eq(nil);
       expect(instance.sequential_proc).to eq(nil);
       expect(instance.set_last_seen_proc).to eq(nil);
+      expect(instance.component_id).to eq(nil);
     end
 
     context "initializes @sequencer" do
@@ -87,11 +90,12 @@ describe Alephant::Alephant do
 
     context "initializes @multi_renderer" do
       it "MultiRenderer class to be initialized" do
-        Alephant::MultiRenderer.should_receive(:new).with(model_file, :foo)
+        Alephant::MultiRenderer.should_receive(:new).with(model_file, 'components/foo')
 
         instance = subject.new({
-          :model_file => model_file,
-          :view_path  => :foo
+          :model_file   => model_file,
+          :view_path    => 'components',
+          :component_id => 'foo'
         })
       end
     end

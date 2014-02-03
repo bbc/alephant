@@ -1,6 +1,6 @@
 module Alephant
   class MultiRenderer
-    DEFAULT_LOCATION = 'views'
+    DEFAULT_LOCATION = 'components'
 
     def initialize(model_file, view_base_path=nil)
       self.base_path = view_base_path unless view_base_path.nil?
