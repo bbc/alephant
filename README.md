@@ -44,7 +44,6 @@ opts = {
   :s3_object_id => 'object_id',
   :table_name => 'your_dynamo_db_table',
   :sqs_queue_id => 'https://your_amazon_sqs_queue_url',
-  :view_id => 'my_view_id',
   :sequential_proc => Proc.new { |last_seen_id, data|
     last_seen_id < data["sequence_id"].to_i
   },

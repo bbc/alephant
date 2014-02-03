@@ -24,7 +24,6 @@ module Alephant
       :s3_object_id,
       :table_name,
       :sqs_queue_id,
-      :view_id,
       :view_path,
       :sequential_proc,
       :set_last_seen_proc
