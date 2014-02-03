@@ -42,22 +42,6 @@ describe Alephant::Renderer do
     end
   end
 
-# describe "base_path" do
-#   it "should return DEFAULT_LOCATION" do
-#     expect(subject.new(template_file).base_path).to eq(
-#       Alephant::Renderer::DEFAULT_LOCATION
-#     )
-#   end
-
-#   context "base_path = '.'" do
-#     let(:base_path) { '.' }
-#     it "should return '.'" do
-#       instance = subject.new(template_file, base_path, model)
-#       expect(instance.base_path).to eq(base_path)
-#     end
-#   end
-# end
-
 # describe "base_path=(path)" do
   # context "base_path = valid_path" do
   #   let(:valid_path) {'.'}

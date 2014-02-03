@@ -16,7 +16,7 @@ describe Alephant::MultiRenderer do
   describe "initialize(view_base_path)" do
     context "view_base_path = nil" do
       it "sets base_path" do
-        expect(subject.new(model_file).base_path).to eq('views')
+        expect(subject.new(model_file).base_path).to eq(Alephant::MultiRenderer::DEFAULT_LOCATION)
       end
     end
 
