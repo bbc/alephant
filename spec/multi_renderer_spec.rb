@@ -13,7 +13,7 @@ describe Alephant::MultiRenderer do
       )
   end
 
-  describe "initialize(view_base_path)" do
+  describe ".initialize(view_base_path)" do
     context "view_base_path = nil" do
       it "sets base_path" do
         expect(subject.new(model_file).base_path).to eq(Alephant::MultiRenderer::DEFAULT_LOCATION)
@@ -37,7 +37,30 @@ describe Alephant::MultiRenderer do
     end
   end
 
-  describe "render(data)" do
+  describe "#render_template(template_file, data, instance = nil)" do
+    context "instance is not nil" do
+      let(:data) { { :foo => :bar } }
+      let(:model_instance) { @instance.create_instance(data) }
+      it "renders the specified template" do
+        expect(
+          @instance.render_template('foo', data, model_instance)
+        ).to eq('content')
+      end
+    end
+
+    context "instance is nil" do
+      let(:data) { { :foo => :bar } }
+      it "renders the specified template" do
+        expect(
+          @instance.render_template('foo', data, nil)
+        ).to eq('content')
+      end
+    end
+
+
+  end
+
+  describe "#render(data)" do
     it "calls ::Alephant::renderer.render() for each template found" do
       templates = {
         :foo => 'content',
@@ -51,11 +74,11 @@ describe Alephant::MultiRenderer do
     end
   end
 
-  describe "model(data)" do
+  describe "#create_instance(data)" do
     let(:data) {{ :key => :value }}
 
     it "returns the model" do
-      model = @instance.model(data)
+      model = @instance.create_instance(data)
       model.should be_an Alephant::Views::Base
       expect(model.data).to eq(data)
     end
@@ -65,7 +88,7 @@ describe Alephant::MultiRenderer do
         instance = subject.new('invalid_model_file', @base_path)
 
         expect {
-          instance.model(data)
+          instance.create_instance(data)
         }.to raise_error(
           Alephant::Errors::ViewModelNotFound
         )

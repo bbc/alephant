@@ -13,38 +13,67 @@ module Alephant
     end
 
     def base_path=(path)
-      if File.directory?(path)
-        @base_path = path
-      else
-        raise Errors::InvalidViewPath
-      end
+      @base_path = File.directory?(path) ? path : (raise Errors::InvalidViewPath)
     end
 
     def render(data)
-      model_object = model(data)
+      instance = create_instance(data)
 
-      Dir.glob("#{base_path}/templates/*").reduce(Hash.new(0)) do |obj, file|
-        template_file = file.split('/').last.sub(/\.mustache/, '')
-
-        obj.tap { |o| o[template_file.to_sym] = ::Alephant::Renderer.new(template_file, base_path, model_object).render.chomp! }
+      template_locations.reduce({}) do |obj, file|
+        template_id = template_id_for file
+        obj.tap do |o|
+          o[template_id.to_sym] = render_template(
+            template_id,
+            data,
+            instance
+          )
+        end
       end
     end
 
-    def model(data)
-      model_location = File.join(base_path, 'models', "#{@model_file}.rb")
+    def render_template(template_file, data, instance = nil)
+      renderer(
+        template_file,
+        base_path,
+        instance.nil? ? create_instance(data) : instance
+      ).render.chomp!
+    end
 
+    def create_instance(data)
       begin
-        require model_location
-        klass = ::Alephant::Views.get_registered_class(@model_file)
-        @logger.info("Renderer.model: klass set to #{klass}")
+        create_model(klass, data)
       rescue Exception => e
         @logger.error("Renderer.model: exeception #{e.message}")
         raise Errors::ViewModelNotFound
       end
+    end
 
-      @logger.info("Renderer.model: creating new klass with data #{data}")
+    def renderer(template_file, base_path, model_object)
+      Renderer.new(template_file, base_path, model_object)
+    end
 
+    private
+    def template_locations
+      Dir.glob("#{base_path}/templates/*")
+    end
+
+    def klass
+      require model_location
+      Views.get_registered_class(@model_file)
+    end
+
+    def create_model(klass, data)
+      @logger.info("Renderer.model: creating new klass #{klass}")
       klass.new(data)
     end
+
+    def template_id_for(template_location)
+      template_location.split('/').last.sub(/\.mustache/, '')
+    end
+
+    def model_location
+      File.join(base_path, 'models', "#{@model_file}.rb")
+    end
+
   end
 end
