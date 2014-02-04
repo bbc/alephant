@@ -68,7 +68,7 @@ module Alephant
       end
 
       def preview_template_location
-        "#{base_path}/templates/preview.mustache"
+        "#{::Alephant::Preview.path}/templates/preview.mustache"
       end
     end
   end

@@ -3,6 +3,11 @@ require 'uri'
 
 module Alephant
   module Preview
+
+    def self.path
+      "#{Dir.pwd}/components/lib"
+    end
+
     class Template
 
       def self.update(template_location)

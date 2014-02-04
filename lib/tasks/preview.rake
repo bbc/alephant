@@ -8,7 +8,7 @@ namespace :alephant do
     end
     task :update do
       Alephant::Preview::Template.update(
-        "#{Dir.pwd}/views/templates/preview.mustache"
+        "#{::Alephant::Preview.path}/templates/preview.mustache"
       )
     end
   end
