@@ -135,7 +135,14 @@ PREVIEW_TEMPLATE_URL="http://yourapp.com/template"
 
 **Example Remote Template**
 
-[http://m.int.bbc.co.uk/news/layout/template](http://m.int.bbc.co.uk/news/layout/template)
+`id` is the component/folder name  
+
+`template` is the mustache template file name  
+
+`location_in_page` should be something like (for example) `page_head` (specified within a `preview.mustache` file that the consuming application needs to create).
+
+- `http://localhost:4567/component/id/template`
+- `http://localhost:4567/preview/id/template/location_in_page`
 
 `alephant update`
 

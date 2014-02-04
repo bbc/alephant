@@ -10,7 +10,8 @@ describe Alephant::Renderer do
     @base_path = File.join(
       File.dirname(__FILE__),
       'fixtures',
-      'views'
+      'components',
+      'foo'
     )
   end
 

@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'alephant/models/parser'
-require 'alephant/models/renderer'
+require 'alephant/models/multi_renderer'
 require 'alephant/views/preview'
 require 'faraday'
 require 'json'
@@ -10,11 +10,11 @@ module Alephant
   module Preview
     class Server < Sinatra::Base
 
-      get '/preview/:id/:region/?:fixture?' do
+      get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
       end
 
-      get '/component/:id/?:fixture?' do
+      get '/component/:id/:template/?:fixture?' do
         render_component
       end
 
@@ -26,10 +26,15 @@ module Alephant
       end
 
       def render_component
-        Renderer.new(id, base_path).render(fixture_data)
+        MultiRenderer.new(id, base_path).render_template(template, fixture_data)
       end
 
       private
+
+      def template
+        params['template']
+      end
+
       def region
         params['region']
       end
@@ -55,7 +60,7 @@ module Alephant
       end
 
       def base_path
-        "#{Dir.pwd}/views"
+        "#{Dir.pwd}/components/#{id}"
       end
 
       def fixture_location
