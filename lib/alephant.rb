@@ -1,5 +1,3 @@
-$: << File.dirname(__FILE__)
-
 require 'aws-sdk'
 
 require_relative 'env'
@@ -8,6 +6,7 @@ require 'alephant/models/logger'
 require 'alephant/models/queue'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
+require 'alephant/models/multi_renderer'
 require 'alephant/models/sequencer'
 require 'alephant/models/parser'
 
@@ -19,12 +18,12 @@ module Alephant
     attr_reader :sequencer, :queue, :cache, :renderer
 
     VALID_OPTS = [
+      :model_file,
       :s3_bucket_id,
       :s3_object_path,
       :s3_object_id,
       :table_name,
       :sqs_queue_id,
-      :view_id,
       :view_path,
       :sequential_proc,
       :set_last_seen_proc
@@ -44,7 +43,7 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @renderer = Renderer.new(@view_id, @view_path)
+      @multi_renderer = MultiRenderer.new(@model_file, @view_path)
       @parser = Parser.new
     end
 
@@ -53,10 +52,9 @@ module Alephant
     end
 
     def write(data)
-      @cache.put(
-        @s3_object_id,
-        @renderer.render(data)
-      )
+      @multi_renderer.render(data).each do |id, item|
+        @cache.put(id, item)
+      end
     end
 
     def receive(msg)
