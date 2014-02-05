@@ -26,7 +26,7 @@ module Alephant
       end
 
       def render_component
-        MultiRenderer.new(id, base_path).render_template(template, fixture_data)
+        MultiRenderer.new(id, template, base_path).render_template(template, fixture_data)
       end
 
       private
@@ -60,11 +60,11 @@ module Alephant
       end
 
       def base_path
-        "#{Dir.pwd}/components/#{id}"
+        "#{Dir.pwd}/components"
       end
 
       def fixture_location
-        "#{base_path}/fixtures/#{fixture}.json"
+        "#{base_path}/#{id}/fixtures/#{fixture}.json"
       end
 
       def preview_template_location

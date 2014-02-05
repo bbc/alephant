@@ -2,9 +2,10 @@ module Alephant
   class MultiRenderer
     DEFAULT_LOCATION = 'components'
 
-    def initialize(model_file, view_base_path=nil)
-      self.base_path = view_base_path unless view_base_path.nil?
+    def initialize(component_id, model_file, view_base_path=nil)
+      self.base_path = "#{view_base_path}/#{component_id}" unless view_base_path.nil?
       @model_file = model_file
+      @component_id = component_id
       @logger = ::Alephant.logger
     end
 
@@ -36,7 +37,7 @@ module Alephant
         template_file,
         base_path,
         instance.nil? ? create_instance(data) : instance
-      ).render.chomp!
+      ).render
     end
 
     def create_instance(data)
@@ -59,7 +60,7 @@ module Alephant
 
     def klass
       require model_location
-      Views.get_registered_class(@model_file)
+      Views.get_registered_class("#{@component_id}_#{@model_file}")
     end
 
     def create_model(klass, data)
