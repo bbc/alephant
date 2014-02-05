@@ -1,5 +1,5 @@
 module MyApp
-  class Foo < ::Alephant::Views::Base
+  class FooFoo < ::Alephant::Views::Base
     def content
       "content"
     end

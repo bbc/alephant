@@ -90,7 +90,9 @@ describe Alephant::Alephant do
 
     context "initializes @multi_renderer" do
       it "MultiRenderer class to be initialized" do
-        Alephant::MultiRenderer.should_receive(:new).with(model_file, 'components/foo')
+        Alephant::MultiRenderer
+          .should_receive(:new)
+          .with('foo', model_file, 'components')
 
         instance = subject.new({
           :model_file   => model_file,
