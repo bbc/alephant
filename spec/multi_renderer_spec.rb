@@ -87,7 +87,7 @@ describe Alephant::MultiRenderer do
 
     it "returns the model" do
       instance = subject.new(component_id, 'fixtures/components')
-      model = instance.create_instance(data, 'foo')
+      model = instance.create_instance('foo', data)
       model.should be_an Alephant::Views::Base
       expect(model.data).to eq(data)
     end
@@ -97,7 +97,7 @@ describe Alephant::MultiRenderer do
         instance = subject.new(component_id, @base_path)
 
         expect {
-          instance.create_instance(data, 'invalid_model')
+          instance.create_instance('invalid_model', data)
         }.to raise_error(
           Alephant::Errors::ViewModelNotFound
         )

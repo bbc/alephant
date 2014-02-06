@@ -17,7 +17,6 @@ module Alephant
     end
 
     def render(data)
-
       template_locations.reduce({}) do |obj, file|
         template_id = template_id_for file
 
@@ -34,44 +33,42 @@ module Alephant
       renderer(
         template_file,
         base_path,
-        create_instance(data, template_file)
+        data
       ).render
     end
 
-    def create_instance(data, template_file)
+    def renderer(template_file, base_path, data)
+      Renderer.new(template_file, base_path, create_instance(template_file, data))
+    end
+
+    def create_instance(template_file, data)
       begin
-        create_model(klass(template_file), data)
+        create_model(template_file, data)
       rescue Exception => e
         @logger.error("Renderer.model: exeception #{e.message}")
         raise Errors::ViewModelNotFound
       end
     end
 
-    def renderer(template_file, base_path, model_object)
-      Renderer.new(template_file, base_path, model_object)
-    end
-
     private
-    def template_locations
-      Dir.glob("#{base_path}/templates/*")
-    end
+    def create_model(template_file, data)
+      require model_location_for template_file
+      klass = Views.get_registered_class("#{@component_id}_#{template_file}")
 
-    def klass(template_file)
-      require model_location(template_file)
-      Views.get_registered_class("#{@component_id}_#{template_file}")
-    end
-
-    def create_model(klass, data)
       @logger.info("Renderer.model: creating new klass #{klass}")
       klass.new(data)
     end
 
-    def template_id_for(template_location)
-      template_location.split('/').last.sub(/\.mustache/, '')
+    def model_location_for(template_file)
+      File.join(base_path, 'models', "#{template_file}.rb")
     end
 
-    def model_location(template_file)
-      File.join(base_path, 'models', "#{template_file}.rb")
+    def template_locations
+      Dir.glob("#{base_path}/templates/*")
+    end
+
+    def template_id_for(template_location)
+      template_location.split('/').last.sub(/\.mustache/, '')
     end
 
   end
