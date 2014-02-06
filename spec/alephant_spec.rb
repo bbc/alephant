@@ -18,14 +18,13 @@ describe Alephant::Alephant do
 
     it "sets specified options" do
       instance = subject.new({
-        :s3_bucket_id       => :s3_bucket_id,
-        :s3_object_path     => :s3_object_path,
-        :s3_object_id       => :s3_object_id,
-        :table_name         => :table_name,
-        :sqs_queue_id       => :sqs_queue_id,
-        :sequential_proc    => :sequential_proc,
-        :set_last_seen_proc => :set_last_seen_proc,
-        :component_id       => :component_id
+        :s3_bucket_id   => :s3_bucket_id,
+        :s3_object_path => :s3_object_path,
+        :s3_object_id   => :s3_object_id,
+        :table_name     => :table_name,
+        :sqs_queue_id   => :sqs_queue_id,
+        :component_id   => :component_id,
+        :sequence_id    => :sequence_id
       })
 
       expect(instance.s3_bucket_id).to eq(:s3_bucket_id);
@@ -33,9 +32,8 @@ describe Alephant::Alephant do
       expect(instance.s3_object_id).to eq(:s3_object_id);
       expect(instance.table_name).to eq(:table_name);
       expect(instance.sqs_queue_id).to eq(:sqs_queue_id);
-      expect(instance.sequential_proc).to eq(:sequential_proc);
-      expect(instance.set_last_seen_proc).to eq(:set_last_seen_proc);
       expect(instance.component_id).to eq(:component_id);
+      expect(instance.sequence_id).to eq(:sequence_id);
     end
 
     it "sets unspecified options to nil" do
@@ -46,9 +44,8 @@ describe Alephant::Alephant do
       expect(instance.s3_object_id).to eq(nil);
       expect(instance.table_name).to eq(nil);
       expect(instance.sqs_queue_id).to eq(nil);
-      expect(instance.sequential_proc).to eq(nil);
-      expect(instance.set_last_seen_proc).to eq(nil);
       expect(instance.component_id).to eq(nil);
+      expect(instance.sequence_id).to eq(nil);
     end
 
     context "initializes @sequencer" do

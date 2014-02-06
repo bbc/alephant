@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Alephant::Sequencer do
   subject { Alephant::Sequencer }
+  let(:jsonpath) { '$.sequence_id' }
 
   describe "initialize(opts, id)" do
 
@@ -60,61 +61,102 @@ describe Alephant::Sequencer do
     end
   end
 
-  describe "sequential?(data)" do
+  describe "sequential?(data, jsonpath)" do
     before(:each) do
       Alephant::Sequencer
         .any_instance.stub(:initialize)
         .and_return(double())
+
+      Alephant::Sequencer
+        .any_instance
+        .stub(:get_last_seen)
+        .and_return(1)
     end
 
-    context "block_given? == true" do
-      it "yields to block" do
-        Alephant::Sequencer
-          .any_instance
-          .stub(:get_last_seen)
-          .and_return(1)
+    context "jsonpath provided" do
+      context "in sequence" do
+        it "looks up data using jsonpath, returns true" do
+          data = { 'sequence_id' => 2 }
 
+          instance    = subject.new
+          in_sequence = instance.sequential?(data, jsonpath)
+
+          expect(in_sequence).to eq(true)
+        end
+      end
+
+      context "out of sequence" do
+        it "looks up data using jsonpath, returns false" do
+          data = { 'sequence_id' => 0 }
+
+          instance    = subject.new
+          in_sequence = instance.sequential?(data, jsonpath)
+
+          expect(in_sequence).to eq(false)
+        end
+      end
+    end
+
+    context "jsonpath NOT provided" do
+      it "looks up data using a fallback key" do
         instance = subject.new
-
-        in_sequence = instance.sequential?(:data) do |last_seen, data|
-          :foo
-        end
-
-        expect(in_sequence).to eq(:foo)
       end
     end
 
-    context "block_given? == false" do
-      context "get_last_seen < data['sequence_id']" do
-        it "returns true" do
-          Alephant::Sequencer
-            .any_instance
-            .stub(:get_last_seen)
-            .and_return(0)
-
-          instance = subject.new
-
-          data = { "sequence_id" => "1" }
-
-          expect(instance.sequential? data).to be(true)
-        end
-      end
-
-      context "get_last_seen >= data['sequence_id']" do
-        it "returns false" do
-          Alephant::Sequencer
-            .any_instance
-            .stub(:get_last_seen)
-            .and_return(1)
-
-          instance = subject.new
-
-          data = { "sequence_id" => "0" }
-
-          expect(instance.sequential? data).to be(false)
-        end
+    context "data not in sequence" do
+      it "" do
+        instance = subject.new
       end
     end
+
+    # context "block_given? == true" do
+    #   it "yields to block" do
+    #     Alephant::Sequencer
+    #       .any_instance
+    #       .stub(:get_last_seen)
+    #       .and_return(1)
+
+    #     instance = subject.new
+
+    #     in_sequence = instance.sequential?(:data) do |last_seen, data|
+    #       :foo
+    #     end
+
+    #     expect(in_sequence).to eq(:foo)
+    #   end
+    # end
+
+    # context "block_given? == false" do
+    #   context "get_last_seen < data['sequence_id']" do
+    #     it "returns true" do
+    #       Alephant::Sequencer
+    #         .any_instance
+    #         .stub(:get_last_seen)
+    #         .and_return(0)
+
+    #       instance = subject.new
+
+    #       data = { "sequence_id" => "1" }
+
+    #       expect(instance.sequential? data).to be(true)
+    #     end
+    #   end
+
+    #   context "get_last_seen >= data['sequence_id']" do
+    #     it "returns false" do
+    #       Alephant::Sequencer
+    #         .any_instance
+    #         .stub(:get_last_seen)
+    #         .and_return(1)
+
+    #       instance = subject.new
+
+    #       data = { "sequence_id" => "0" }
+
+    #       expect(instance.sequential? data).to be(false)
+    #     end
+    #   end
+    # end
 
   end
 end
