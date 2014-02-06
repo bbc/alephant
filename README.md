@@ -16,7 +16,7 @@ Static publishing to S3 on push notification from SQS
 - JRuby 1.7.8
 - An AWS account (you'll need to create):
   - An S3 bucket
-  - An SQS Queue
+  - An SQS Queue (if no sequence id provided then `sequence_id` will be used)
   - A Dynamo DB table (optional, will attempt to create if can't be found)
 
 ##Setup
