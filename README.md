@@ -150,3 +150,10 @@ PREVIEW_TEMPLATE_URL="http://yourapp.com/template"
 
 `/preview/:id/:region/?:fixture?`
 
+## Build the gem locally
+
+If you want to test a modified version of the gem within your application without publishing it then you can follow these steps...
+
+- `gem uninstall alephant`
+- `gem build alephant.gemspec` (this will report the file generated which you reference in the next command)
+- `gem install ./alephant-0.0.9.1-java.gem`
