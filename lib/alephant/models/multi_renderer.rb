@@ -24,7 +24,7 @@ module Alephant
         obj.tap do |o|
           o[template_id.to_sym] = render_template(
             template_id,
-            fixture_data
+            data
           )
         end
       end

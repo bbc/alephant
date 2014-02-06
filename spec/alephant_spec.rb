@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Alephant::Alephant do
-  let(:model_file) { 'foo' }
   subject { Alephant::Alephant }
 
   describe "initialize(opts = {})" do
@@ -19,7 +18,6 @@ describe Alephant::Alephant do
 
     it "sets specified options" do
       instance = subject.new({
-        :model_file         => :model_file,
         :s3_bucket_id       => :s3_bucket_id,
         :s3_object_path     => :s3_object_path,
         :s3_object_id       => :s3_object_id,
@@ -30,7 +28,6 @@ describe Alephant::Alephant do
         :component_id       => :component_id
       })
 
-      expect(instance.model_file).to eq(:model_file);
       expect(instance.s3_bucket_id).to eq(:s3_bucket_id);
       expect(instance.s3_object_path).to eq(:s3_object_path);
       expect(instance.s3_object_id).to eq(:s3_object_id);
@@ -44,7 +41,6 @@ describe Alephant::Alephant do
     it "sets unspecified options to nil" do
       instance = subject.new
 
-      expect(instance.model_file).to eq(nil);
       expect(instance.s3_bucket_id).to eq(nil);
       expect(instance.s3_object_path).to eq(nil);
       expect(instance.s3_object_id).to eq(nil);
@@ -92,10 +88,9 @@ describe Alephant::Alephant do
       it "MultiRenderer class to be initialized" do
         Alephant::MultiRenderer
           .should_receive(:new)
-          .with('foo', model_file, 'components')
+          .with('foo', 'components')
 
         instance = subject.new({
-          :model_file   => model_file,
           :view_path    => 'components',
           :component_id => 'foo'
         })
