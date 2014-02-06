@@ -26,7 +26,7 @@ module Alephant
       end
 
       def render_component
-        MultiRenderer.new(id, template, base_path).render_template(template, fixture_data)
+        MultiRenderer.new(id, base_path).render_template(template, fixture_data)
       end
 
       private
