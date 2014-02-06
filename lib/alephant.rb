@@ -24,9 +24,8 @@ module Alephant
       :table_name,
       :sqs_queue_id,
       :view_path,
-      :sequential_proc,
-      :set_last_seen_proc,
-      :component_id
+      :component_id,
+      :sequence_id
     ]
 
     def initialize(opts = {}, logger = nil)
@@ -62,9 +61,9 @@ module Alephant
 
       @logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
 
-      if @sequencer.sequential?(data, &@sequential_proc)
+      if @sequencer.sequential?(data, @sequence_id)
         write data
-        @sequencer.set_last_seen(data, &@set_last_seen_proc)
+        @sequencer.set_last_seen(data, @sequence_id)
       else
         @logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
       end
