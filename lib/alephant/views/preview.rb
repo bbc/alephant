@@ -11,7 +11,7 @@ module Alephant
       end
 
       def static_host
-        'localhost:8000'
+        ENV['STATIC_HOST'] || 'localhost:8000'
       end
 
       def method_missing(name, *args, &block)
