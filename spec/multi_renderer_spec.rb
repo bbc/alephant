@@ -48,20 +48,6 @@ describe Alephant::MultiRenderer do
         ).to eq('content')
       end
     end
-
-#    context "instance is nil" do
-#      let(:data) {{ :foo => :bar }}
-#
-#      it "renders the specified template" do
-#        Alephant::MultiRenderer.any_instance.stub(:create_instance)
-#        Alephant::Renderer.any_instance.stub(:render).and_return('content')
-#
-#        expect(
-#          subject.new(component_id)
-#            .render_template('foo', data)
-#        ).to eq('content')
-#      end
-#    end
   end
 
   describe "render(data)" do
