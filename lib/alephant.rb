@@ -18,7 +18,6 @@ module Alephant
     attr_reader :sequencer, :queue, :cache, :renderer
 
     VALID_OPTS = [
-      :model_file,
       :s3_bucket_id,
       :s3_object_path,
       :s3_object_id,
@@ -44,7 +43,7 @@ module Alephant
 
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @multi_renderer = MultiRenderer.new(@component_id, @model_file, @view_path)
+      @multi_renderer = MultiRenderer.new(@component_id, @view_path)
       @parser = Parser.new
     end
 
