@@ -35,5 +35,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rake'
   s.add_runtime_dependency 'aws-sdk', '~> 1.0'
   s.add_runtime_dependency 'mustache', '>= 0.99.5'
+  s.add_runtime_dependency 'jsonpath'
 end
 
