@@ -14,7 +14,7 @@ module Alephant
     end
 
     def render
-      @logger.info("Renderer.render: rendered template #{template_file}")
+      @logger.info("Renderer.render: rendered template #{@template_file}")
 
       Mustache.render(template, @model)
     end
