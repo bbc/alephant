@@ -66,13 +66,13 @@ module Alephant
       File.join(base_path, 'models', "#{template_file}.rb")
     end
 
-    def template_locations
+   def template_locations
       @logger.info("MultiRenderer.template_locations: locating templates in #{template_base_path}")
-      Dir.glob(template_base_path)
+      Dir[template_base_path]
     end
-    
+
     def template_base_path
-      File.expand_path("#{base_path}/templates/*")
+      "#{base_path}/templates/*"
     end
 
     def template_id_for(template_location)
