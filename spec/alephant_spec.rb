@@ -156,8 +156,8 @@ describe Alephant::Alephant do
       msg = double()
       msg.stub(:body).and_return('notjson')
 
-      expect { instance.receive(msg) }
-        .to raise_error(JSON::ParserError);
+      expect { JsonPath.on(msg.body, '$.foo') }
+        .to raise_error(MultiJson::LoadError);
     end
 
     it "writes data to cache if sequential order is true" do
