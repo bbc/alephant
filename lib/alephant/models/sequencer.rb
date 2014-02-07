@@ -48,7 +48,7 @@ module Alephant
       @logger.info("Sequencer.initialize: end with id #{@id}")
     end
 
-    def sequential?(data, jsonpath)
+    def sequential?(data, jsonpath = nil)
       get_last_seen < operator(data, jsonpath)
     end
 
@@ -63,7 +63,7 @@ module Alephant
 
     def operator(data, jsonpath)
       jsonpath.nil? ?
-        data["sequence_id"].to_i :
+        data['sequence_id'].to_i :
         JsonPath.on(data, jsonpath).first
     end
 
