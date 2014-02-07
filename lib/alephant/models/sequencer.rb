@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'jsonpath'
 
 module Alephant
   class Sequencer
@@ -47,21 +48,23 @@ module Alephant
       @logger.info("Sequencer.initialize: end with id #{@id}")
     end
 
-    def sequential?(data)
-      if block_given?
-        yield(get_last_seen, data)
-      else
-        get_last_seen < data["sequence_id"].to_i
-      end
+    def sequential?(data, jsonpath = nil)
+      get_last_seen < get_sequence_id_from(data, jsonpath)
     end
 
-    def set_last_seen(data)
-      last_seen_id = block_given? ? yield(data) : data["sequence_id"]
+    def set_last_seen(data, jsonpath)
+      last_seen_id = get_sequence_id_from(data, jsonpath)
 
       batch = AWS::DynamoDB::BatchWrite.new
       batch.put(@table_name, [:key => @id,:value => last_seen_id])
       batch.process!
       @logger.info("Sequencer.set_last_seen: id #{id} and last_seen_id #{last_seen_id}")
+    end
+
+    def get_sequence_id_from(data, jsonpath)
+      jsonpath.nil? ?
+        data.body['sequence_id'].to_i :
+        JsonPath.on(data.body, jsonpath).first
     end
 
     def get_last_seen

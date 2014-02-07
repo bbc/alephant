@@ -60,58 +60,61 @@ describe Alephant::Sequencer do
     end
   end
 
-  describe "sequential?(data)" do
+  describe "sequential?(data, jsonpath = nil)" do
+    let(:jsonpath) { '$.sequence_id' }
+    let(:instance) { subject.new }
+    let(:id_value) { 0 }
+    let(:data)     { double() }
+
     before(:each) do
       Alephant::Sequencer
         .any_instance.stub(:initialize)
         .and_return(double())
+
+      Alephant::Sequencer
+        .any_instance
+        .stub(:get_last_seen)
+        .and_return(1)
+
+      data.stub(:body).and_return('sequence_id' => id_value)
     end
 
-    context "block_given? == true" do
-      it "yields to block" do
-        Alephant::Sequencer
-          .any_instance
-          .stub(:get_last_seen)
-          .and_return(1)
+    context "jsonpath provided" do
+      context "in sequence" do
+        let(:id_value) { 2 }
 
-        instance = subject.new
-
-        in_sequence = instance.sequential?(:data) do |last_seen, data|
-          :foo
-        end
-
-        expect(in_sequence).to eq(:foo)
-      end
-    end
-
-    context "block_given? == false" do
-      context "get_last_seen < data['sequence_id']" do
-        it "returns true" do
-          Alephant::Sequencer
-            .any_instance
-            .stub(:get_last_seen)
-            .and_return(0)
-
-          instance = subject.new
-
-          data = { "sequence_id" => "1" }
-
-          expect(instance.sequential? data).to be(true)
+        it "looks up data using jsonpath (returns true)" do
+          in_sequence = instance.sequential?(data, jsonpath)
+          expect(in_sequence).to eq(true)
         end
       end
 
-      context "get_last_seen >= data['sequence_id']" do
-        it "returns false" do
-          Alephant::Sequencer
-            .any_instance
-            .stub(:get_last_seen)
-            .and_return(1)
+      context "out of sequence" do
+        let(:id_value) { 0 }
 
-          instance = subject.new
+        it "looks up data using jsonpath (returns false)" do
+          in_sequence = instance.sequential?(data, jsonpath)
+          expect(in_sequence).to eq(false)
+        end
+      end
+    end
 
-          data = { "sequence_id" => "0" }
+    context "jsonpath NOT provided" do
+      context "in sequence" do
+        let(:id_value) { 2 }
 
-          expect(instance.sequential? data).to be(false)
+        it "looks up data using a fallback key (returns true)" do
+          in_sequence = instance.sequential?(data)
+          expect(in_sequence).to eq(true)
+        end
+      end
+
+      context "out of sequence" do
+        let(:id_value) { 0 }
+
+        it "looks up data using a fallback key (returns false)" do
+          in_sequence = instance.sequential?(data)
+          expect(in_sequence).to eq(false)
         end
       end
     end

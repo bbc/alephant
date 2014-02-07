@@ -18,14 +18,13 @@ describe Alephant::Alephant do
 
     it "sets specified options" do
       instance = subject.new({
-        :s3_bucket_id       => :s3_bucket_id,
-        :s3_object_path     => :s3_object_path,
-        :s3_object_id       => :s3_object_id,
-        :table_name         => :table_name,
-        :sqs_queue_id       => :sqs_queue_id,
-        :sequential_proc    => :sequential_proc,
-        :set_last_seen_proc => :set_last_seen_proc,
-        :component_id       => :component_id
+        :s3_bucket_id   => :s3_bucket_id,
+        :s3_object_path => :s3_object_path,
+        :s3_object_id   => :s3_object_id,
+        :table_name     => :table_name,
+        :sqs_queue_id   => :sqs_queue_id,
+        :component_id   => :component_id,
+        :sequence_id    => :sequence_id
       })
 
       expect(instance.s3_bucket_id).to eq(:s3_bucket_id);
@@ -33,9 +32,8 @@ describe Alephant::Alephant do
       expect(instance.s3_object_id).to eq(:s3_object_id);
       expect(instance.table_name).to eq(:table_name);
       expect(instance.sqs_queue_id).to eq(:sqs_queue_id);
-      expect(instance.sequential_proc).to eq(:sequential_proc);
-      expect(instance.set_last_seen_proc).to eq(:set_last_seen_proc);
       expect(instance.component_id).to eq(:component_id);
+      expect(instance.sequence_id).to eq(:sequence_id);
     end
 
     it "sets unspecified options to nil" do
@@ -46,14 +44,14 @@ describe Alephant::Alephant do
       expect(instance.s3_object_id).to eq(nil);
       expect(instance.table_name).to eq(nil);
       expect(instance.sqs_queue_id).to eq(nil);
-      expect(instance.sequential_proc).to eq(nil);
-      expect(instance.set_last_seen_proc).to eq(nil);
       expect(instance.component_id).to eq(nil);
+      expect(instance.sequence_id).to eq(nil);
     end
 
     context "initializes @sequencer" do
       it "with Sequencer.new({ :table_name => :table_name }, @sqs_queue_id)" do
-        Alephant::Sequencer.should_receive(:new)
+        Alephant::Sequencer
+          .should_receive(:new)
           .with({ :table_name => :table_name }, :sqs_queue_id)
 
         instance = subject.new({
@@ -65,7 +63,9 @@ describe Alephant::Alephant do
 
     context "initializes @queue" do
       it "with Queue.new(@sqs_queue_id)" do
-        Alephant::Queue.should_receive(:new).with(:sqs_queue_id)
+        Alephant::Queue
+          .should_receive(:new)
+          .with(:sqs_queue_id)
 
         instance = subject.new({
           :sqs_queue_id => :sqs_queue_id
@@ -75,7 +75,9 @@ describe Alephant::Alephant do
 
     context "initializes @cache" do
       it "with Cache.new(@s3_bucket_id, @s3_object_path)" do
-        Alephant::Cache.should_receive(:new).with(:s3_bucket_id, :s3_object_path)
+        Alephant::Cache
+          .should_receive(:new)
+          .with(:s3_bucket_id, :s3_object_path)
 
         instance = subject.new({
           :s3_bucket_id   => :s3_bucket_id,
@@ -126,7 +128,9 @@ describe Alephant::Alephant do
 
       instance.should_receive(:receive).with(:msg)
 
-      expect_any_instance_of(Alephant::Queue).to receive(:poll).and_yield(:msg)
+      expect_any_instance_of(Alephant::Queue)
+        .to receive(:poll)
+        .and_yield(:msg)
 
       t = instance.run!
       t.join
@@ -148,10 +152,12 @@ describe Alephant::Alephant do
 
     it "takes json as an argument" do
       instance = subject.new
+
       msg = double()
       msg.stub(:body).and_return('notjson')
 
-      expect { instance.receive(msg) }.to raise_error(JSON::ParserError);
+      expect { JsonPath.on(msg.body, '$.foo') }
+        .to raise_error(MultiJson::LoadError);
     end
 
     it "writes data to cache if sequential order is true" do
@@ -164,10 +170,19 @@ describe Alephant::Alephant do
 
       instance = subject.new
 
-      Alephant::Sequencer.any_instance.stub(:sequential?).and_return(true)
-      Alephant::Sequencer.any_instance.stub(:set_last_seen)
+      Alephant::Sequencer
+        .any_instance
+        .stub(:sequential?)
+        .and_return(true)
 
-      instance.should_receive(:write).with(JSON.parse(data, :symbolize_names => true))
+      Alephant::Sequencer
+        .any_instance
+        .stub(:set_last_seen)
+
+      instance
+        .should_receive(:write)
+        .with(JSON.parse(data, :symbolize_names => true))
+
       instance.receive(msg)
     end
   end
@@ -177,8 +192,15 @@ describe Alephant::Alephant do
       sequencer = double()
       queue     = double()
 
-      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
-      Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
+      Alephant::Sequencer
+        .any_instance
+        .stub(:initialize)
+        .and_return(sequencer)
+
+      Alephant::Queue
+        .any_instance
+        .stub(:initialize)
+        .and_return(queue)
     end
 
     it "puts rendered data into the S3 Cache" do
