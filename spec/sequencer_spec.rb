@@ -64,7 +64,7 @@ describe Alephant::Sequencer do
     let(:jsonpath) { '$.sequence_id' }
     let(:instance) { subject.new }
     let(:id_value) { 0 }
-    let(:data)     {{ 'sequence_id' => id_value }}
+    let(:data)     { double() }
 
     before(:each) do
       Alephant::Sequencer
@@ -75,6 +75,8 @@ describe Alephant::Sequencer do
         .any_instance
         .stub(:get_last_seen)
         .and_return(1)
+
+      data.stub(:body).and_return('sequence_id' => id_value)
     end
 
     context "jsonpath provided" do

@@ -63,8 +63,8 @@ module Alephant
 
     def operator(data, jsonpath)
       jsonpath.nil? ?
-        data['sequence_id'].to_i :
-        JsonPath.on(data, jsonpath).first
+        data.body['sequence_id'].to_i :
+        JsonPath.on(data.body, jsonpath).first
     end
 
     def get_last_seen
