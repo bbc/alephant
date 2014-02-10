@@ -8,6 +8,7 @@ require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/multi_renderer'
 require 'alephant/models/sequencer'
+require 'alephant/models/sequence_table'
 require 'alephant/models/parser'
 
 require 'alephant/errors'
@@ -34,10 +35,9 @@ module Alephant
 
       @logger = ::Alephant.logger
       @sequencer = Sequencer.new(
-        {
-          :table_name => @table_name
-        },
-        @sqs_queue_id
+        SequenceTable.new(@table_name),
+        @sqs_queue_id,
+        @sequence_id
       )
 
       @queue = Queue.new(@sqs_queue_id)
