@@ -1,15 +1,21 @@
-
 require 'spec_helper'
 
 describe Alephant::MultiRenderer do
   let(:component_id) { :foo }
+  let(:data) {{ :foo => :bar }}
+
   subject { Alephant::MultiRenderer }
+
+  before(:each) do
+    File.stub(:directory?).and_return(true)
+  end
 
   describe "initialize(view_base_path)" do
     context "view_base_path = invalid_path" do
       it "should raise InvalidViewPath" do
+        File.stub(:directory?).and_return(false)
         expect {
-          instance = subject.new(component_id, './invalid_path')
+          subject.new(component_id, './invalid_path')
         }.to raise_error(
           Alephant::Errors::InvalidViewPath
         )
@@ -18,7 +24,6 @@ describe Alephant::MultiRenderer do
 
     context "view_base_path = '.'" do
       it "sets base_path" do
-        File.stub(:directory?).and_return(true)
         expect(subject.new(component_id, '.').base_path).to eq("./#{component_id}")
       end
     end
@@ -31,73 +36,53 @@ describe Alephant::MultiRenderer do
   end
 
   describe "render_template(template_file, data, instance = nil)" do
-    before(:each) do
-      File.stub(:directory?).and_return(true)
-    end
-
     context "instance is not nil" do
-      let(:data) {{ :foo => :bar }}
-
       it "renders the specified template" do
         Alephant::MultiRenderer.any_instance.stub(:create_instance)
         Alephant::Renderer.any_instance.stub(:render).and_return('content')
 
         expect(
           subject.new(component_id, '.')
-            .render_template('foo', data)
+          .render_template('foo', data)
         ).to eq('content')
       end
     end
   end
 
   describe "render(data)" do
-    before(:each) do
-      File.stub(:directory?).and_return(true)
-    end
+    it "calls render_template for each template found" do
+      Alephant::MultiRenderer.any_instance.stub(:render_template)
+      Alephant::MultiRenderer.any_instance.stub(
+        :template_locations
+      ).and_return(['foo', 'bar'])
 
-    it "calls ::Alephant::renderer.render() for each template found" do
-      Alephant::MultiRenderer.any_instance.stub(:create_instance)
-      Alephant::Renderer.any_instance.stub(:render).and_return('content')
-
-      Dir.stub(:glob).and_return(['/some/path/foo.mustache', '/some/path/bar.mustache'])
-
-      templates = {
-        :foo => 'content',
-        :bar => 'content'
-      }
-
-      instance = subject.new(component_id, '.')
-
-      content = instance.render({ :foo => :bar })
-
-      expect(content.size).to eq(2)
-
-      content.each do |template_type, rendered_content|
-        expect(rendered_content).to eq(templates[template_type])
-      end
+      expect(
+        subject.new(component_id, '.').render(data).size
+      ).to eq(2)
     end
   end
 
   describe "create_instance(template_file, data)" do
-    before(:each) do
-      File.stub(:directory?).and_return(true)
-    end
-
-    let(:data) {{ :key => :value }}
-
     it "returns the model" do
-      instance = subject.new(component_id, 'fixtures/components')
-      model = instance.create_instance('foo', data)
+      model = subject.new(
+        component_id,
+        'fixtures/components'
+      ).create_instance('foo', data)
+
       model.should be_an Alephant::Views::Base
       expect(model.data).to eq(data)
     end
 
     context "invalid model" do
       it 'should raise ViewModelNotFound' do
-        instance = subject.new(component_id, @base_path)
-
         expect {
-          instance.create_instance('invalid_model', data)
+          subject.new(
+            component_id,
+            @base_path
+          ).create_instance(
+            'invalid_model',
+            data
+          )
         }.to raise_error(
           Alephant::Errors::ViewModelNotFound
         )
