@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - "jruby-19mode"
+  - "jruby"
 notifications:
   email:
     recipients:
