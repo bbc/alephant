@@ -7,7 +7,7 @@ describe Alephant::LogSystem do
     cache     = double()
     renderer  = double()
 
-    Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+    Alephant::Sequencer.stub(:create).and_return(sequencer)
     Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
     Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
     Alephant::Renderer.any_instance.stub(:initialize).and_return(renderer)

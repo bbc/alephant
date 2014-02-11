@@ -1,124 +1,107 @@
 require 'spec_helper'
 
+
 describe Alephant::Sequencer do
-  subject { Alephant::Sequencer }
+  let(:ident) { :ident }
+  let(:jsonpath) { :jsonpath }
 
-  describe "initialize(opts, id)" do
-
-    it "sets @id, @table_name and @table_conf" do
-      AWS::DynamoDB.any_instance.stub(:initialize).and_return({
-        :tables => {
-          :status => :active
-        }
-      })
-
-      Alephant::Sequencer.any_instance.stub(:sleep_until_table_active)
-
-      instance = subject.new({
-        :table_name => :table_name,
-        :table_conf => :table_conf
-      }, :sqs_queue_id)
-
-      expect(instance.id).to eq(:sqs_queue_id)
-      expect(instance.table_name).to eq(:table_name)
-      expect(instance.table_conf).to eq(:table_conf)
-    end
-
-    context "sleep_until_table_active raises" do
-      context "AWS::DynamoDB::Errors::ResourceNotFoundException" do
-        it "dynamo_db.tables.create(@table_name, opts) then sleep_until_table_active" do
-          opts = {
-              :table_name => :table_name,
-              :table_conf => {
-                :read_units => :read_units,
-                :write_units => :write_units,
-                :schema => :schema
-              }
-          }
-
-          table_collection = double()
-          table_collection.should_receive(:create).with(
-            opts[:table_name],
-            opts[:table_conf][:read_units],
-            opts[:table_conf][:write_units],
-            opts[:table_conf][:schema]
-          )
-
-          AWS::DynamoDB.any_instance.stub(:tables).and_return({},table_collection)
-
-          Alephant::Sequencer
-            .any_instance
-            .stub(:sleep_until_table_active).and_yield do
-              @times_called ||= 0
-              raise AWS::DynamoDB::Errors::ResourceNotFoundException if @times_called == 0
-              @times_called += 1
-            end
-
-          subject.new(opts, :id)
-        end
-      end
+  describe ".create(table_name, ident, jsonpath)" do
+    it "should return a Sequencer" do
+      Alephant::Sequencer::SequenceTable.any_instance.stub(:create)
+      expect(subject.create(:table_name, ident, jsonpath)).to be_a Alephant::Sequencer::Sequencer
     end
   end
 
-  describe "sequential?(data, jsonpath = nil)" do
-    let(:jsonpath) { '$.sequence_id' }
-    let(:instance) { subject.new }
-    let(:id_value) { 0 }
+  describe Alephant::Sequencer::Sequencer do
     let(:data)     { double() }
+    let(:last_seen) { 42 }
+    let(:sequence_table) { double().tap { |o| o.stub(:create) } }
+    subject { Alephant::Sequencer::Sequencer.new(sequence_table, ident, jsonpath) }
 
-    before(:each) do
-      Alephant::Sequencer
-        .any_instance.stub(:initialize)
-        .and_return(double())
-
-      Alephant::Sequencer
-        .any_instance
-        .stub(:get_last_seen)
-        .and_return(1)
-
-      data.stub(:body).and_return('sequence_id' => id_value)
-    end
-
-    context "jsonpath provided" do
-      context "in sequence" do
-        let(:id_value) { 2 }
-
-        it "looks up data using jsonpath (returns true)" do
-          in_sequence = instance.sequential?(data, jsonpath)
-          expect(in_sequence).to eq(true)
-        end
+    describe "#initialize(opts, id)" do
+      it "sets @jsonpath, @ident" do
+        expect(subject.jsonpath).to eq(jsonpath)
+        expect(subject.ident).to eq(ident)
       end
 
-      context "out of sequence" do
-        let(:id_value) { 0 }
+      it "calls create on sequence_table" do
+        table = double()
+        table.should_receive(:create)
 
-        it "looks up data using jsonpath (returns false)" do
-          in_sequence = instance.sequential?(data, jsonpath)
-          expect(in_sequence).to eq(false)
-        end
+        Alephant::Sequencer::Sequencer.new(table, ident, jsonpath)
       end
     end
 
-    context "jsonpath NOT provided" do
-      context "in sequence" do
-        let(:id_value) { 2 }
+    describe "#get_last_seen" do
+      it "returns sequence_table.sequence_for(ident)" do
+        table = double()
+        table.stub(:create)
+        table.should_receive(:sequence_for).with(ident).and_return(:expected_value)
 
-        it "looks up data using a fallback key (returns true)" do
-          in_sequence = instance.sequential?(data)
-          expect(in_sequence).to eq(true)
-        end
-      end
-
-      context "out of sequence" do
-        let(:id_value) { 0 }
-
-        it "looks up data using a fallback key (returns false)" do
-          in_sequence = instance.sequential?(data)
-          expect(in_sequence).to eq(false)
-        end
+        expect(
+          Alephant::Sequencer::Sequencer.new(table, ident).get_last_seen
+        ).to eq(:expected_value)
       end
     end
 
+    describe "#set_last_seen(data)" do
+      before(:each) do
+        Alephant::Sequencer::Sequencer.any_instance.stub(:sequence_id_from).and_return(last_seen)
+      end
+
+      it "calls set_sequence_for(ident, last_seen)" do
+        table = double()
+        table.stub(:create)
+        table.should_receive(:set_sequence_for).with(ident, last_seen)
+
+        Alephant::Sequencer::Sequencer.new(table, ident).set_last_seen(data)
+      end
+    end
+
+    describe "#sequential?(data, jsonpath)" do
+
+      before(:each) do
+        Alephant::Sequencer::Sequencer.any_instance.stub(:get_last_seen).and_return(1)
+        data.stub(:body).and_return('sequence_id' => id_value)
+      end
+
+      context "jsonpath = '$.sequence_id'" do
+        let(:jsonpath) { '$.sequence_id' }
+        subject { Alephant::Sequencer::Sequencer.new(sequence_table, :ident, jsonpath) }
+        context "sequential" do
+          let(:id_value) { 2 }
+          it "is true" do
+            expect(subject.sequential?(data)).to be_true
+          end
+        end
+
+        context "nonsequential" do
+          let(:id_value) { 0 }
+          it "is false" do
+            expect(subject.sequential?(data)).to be_false
+          end
+        end
+      end
+
+      context "jsonpath = nil" do
+        let(:jsonpath) { nil }
+        subject { Alephant::Sequencer::Sequencer.new(sequence_table, :ident, jsonpath) }
+
+        context "sequential" do
+          let(:id_value) { 2 }
+          it "is true" do
+            expect(subject.sequential?(data)).to be_true
+          end
+        end
+
+        context "nonsequential" do
+          let(:id_value) { 0 }
+          it "is false" do
+            expect(subject.sequential?(data)).to be_false
+          end
+        end
+      end
+
+    end
   end
 end
-
