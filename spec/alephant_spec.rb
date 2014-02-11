@@ -10,7 +10,7 @@ describe Alephant::Alephant do
       cache          = double()
       multi_renderer = double()
 
-      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Sequencer.stub(:create).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
       Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
@@ -49,14 +49,15 @@ describe Alephant::Alephant do
     end
 
     context "initializes @sequencer" do
-      it "with Sequencer.new({ :table_name => :table_name }, @sqs_queue_id)" do
+      it "with Sequencer.create(:table_name, @sqs_queue_id)" do
         Alephant::Sequencer
-          .should_receive(:new)
-          .with({ :table_name => :table_name }, :sqs_queue_id)
+          .should_receive(:create)
+          .with(:table_name, :sqs_queue_id, :sequence_id)
 
         instance = subject.new({
           :table_name   => :table_name,
-          :sqs_queue_id => :sqs_queue_id
+          :sqs_queue_id => :sqs_queue_id,
+          :sequence_id => :sequence_id
         })
       end
     end
@@ -107,7 +108,7 @@ describe Alephant::Alephant do
       cache          = double()
       multi_renderer = double()
 
-      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
+      Alephant::Sequencer.stub(:create).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
       Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
@@ -144,20 +145,9 @@ describe Alephant::Alephant do
       cache          = double()
       multi_renderer = double()
 
-      Alephant::Sequencer.any_instance.stub(:initialize).and_return(sequencer)
       Alephant::Queue.any_instance.stub(:initialize).and_return(queue)
       Alephant::Cache.any_instance.stub(:initialize).and_return(cache)
       Alephant::MultiRenderer.any_instance.stub(:initialize).and_return(multi_renderer)
-    end
-
-    it "takes json as an argument" do
-      instance = subject.new
-
-      msg = double()
-      msg.stub(:body).and_return('notjson')
-
-      expect { JsonPath.on(msg.body, '$.foo') }
-        .to raise_error(MultiJson::LoadError);
     end
 
     it "writes data to cache if sequential order is true" do
@@ -168,16 +158,21 @@ describe Alephant::Alephant do
       msg.stub(:md5).and_return(:md5)
       msg.stub(:body).and_return(data)
 
-      instance = subject.new
 
-      Alephant::Sequencer
+      Alephant::Sequencer::Sequencer
         .any_instance
         .stub(:sequential?)
         .and_return(true)
 
-      Alephant::Sequencer
+      Alephant::Sequencer::SequenceTable
+        .any_instance
+        .stub(:create)
+
+      Alephant::Sequencer::Sequencer
         .any_instance
         .stub(:set_last_seen)
+
+      instance = subject.new
 
       instance
         .should_receive(:write)
@@ -192,7 +187,7 @@ describe Alephant::Alephant do
       sequencer = double()
       queue     = double()
 
-      Alephant::Sequencer
+      Alephant::Sequencer::Sequencer
         .any_instance
         .stub(:initialize)
         .and_return(sequencer)
