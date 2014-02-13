@@ -38,5 +38,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'jsonpath'
 
   s.add_runtime_dependency 'alephant-sequencer'
+  s.add_runtime_dependency 'alephant-logger'
 end
 
