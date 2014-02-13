@@ -5,6 +5,7 @@ require 'alephant/logger'
 module Alephant
   class Renderer
     include Logger
+
     attr_reader :template_file
 
     def initialize(template_file, base_path, model)

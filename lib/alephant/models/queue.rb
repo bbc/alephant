@@ -3,7 +3,7 @@ require 'alephant/logger'
 
 module Alephant
   class Queue
-    include Logger
+    include ::Alephant::Logger
 
     attr_accessor :q
 

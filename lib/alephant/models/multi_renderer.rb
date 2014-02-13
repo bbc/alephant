@@ -2,8 +2,7 @@ require 'alephant/logger'
 
 module Alephant
   class MultiRenderer
-    include Logger
-
+    include ::Alephant::Logger
     DEFAULT_LOCATION = 'components'
 
     def initialize(component_id, view_base_path=nil)

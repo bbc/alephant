@@ -3,7 +3,7 @@ require 'alephant/logger'
 
 module Alephant
   class Cache
-    include Logger
+    include ::Alephant::Logger
     attr_reader :id, :bucket, :path
 
     def initialize(id, path)

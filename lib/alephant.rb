@@ -14,7 +14,7 @@ require 'alephant/views'
 
 module Alephant
   class Alephant
-    include Logger
+    include ::Alephant::Logger
 
     attr_reader :sequencer, :queue, :cache, :renderer
 
@@ -30,7 +30,7 @@ module Alephant
     ]
 
     def initialize(opts = {}, logger = nil)
-      Alephant::Logger.set_logger(logger)
+      ::Alephant::Logger.set_logger(logger) unless logger.nil?
       set_opts(opts)
 
       @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id)

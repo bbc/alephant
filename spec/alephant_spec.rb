@@ -158,7 +158,6 @@ describe Alephant::Alephant do
       msg.stub(:md5).and_return(:md5)
       msg.stub(:body).and_return(data)
 
-
       Alephant::Sequencer::Sequencer
         .any_instance
         .stub(:sequential?)
