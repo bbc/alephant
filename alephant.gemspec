@@ -40,5 +40,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'alephant-sequencer'
   s.add_runtime_dependency 'alephant-logger'
   s.add_runtime_dependency 'alephant-cache'
+  s.add_runtime_dependency 'alephant-renderer'
 end
 

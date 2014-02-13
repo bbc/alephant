@@ -1,7 +1,6 @@
 require_relative 'env'
 
 require 'alephant/models/queue'
-require 'alephant/models/renderer'
 require 'alephant/models/multi_renderer'
 require 'alephant/models/parser'
 
@@ -10,6 +9,7 @@ require 'alephant/cache'
 require 'alephant/logger'
 require 'alephant/errors'
 require 'alephant/views'
+require 'alephant/renderer'
 
 module Alephant
   class Alephant
