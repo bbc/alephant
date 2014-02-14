@@ -39,11 +39,11 @@ describe Alephant::MultiRenderer do
     context "instance is not nil" do
       it "renders the specified template" do
         Alephant::MultiRenderer.any_instance.stub(:create_instance)
-        Alephant::Renderer.any_instance.stub(:render).and_return('content')
+        Alephant::Renderer::Mustache.any_instance.stub(:render).and_return('content')
 
         expect(
           subject.new(component_id, '.')
-          .render_template('foo', data)
+            .render_template('foo', data)
         ).to eq('content')
       end
     end

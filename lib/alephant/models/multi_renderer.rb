@@ -42,7 +42,14 @@ module Alephant
     end
 
     def renderer(template_file, base_path, data)
-      Renderer.new(template_file, base_path, create_instance(template_file, data))
+      Renderer.create(
+        template_file,
+        base_path,
+        create_instance(
+          template_file,
+          data
+        )
+      )
     end
 
     def create_instance(template_file, data)
