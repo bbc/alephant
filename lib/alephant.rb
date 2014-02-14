@@ -2,18 +2,20 @@ require_relative 'env'
 
 require 'alephant/sequencer'
 
-require 'alephant/models/logger'
 require 'alephant/models/queue'
 require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/multi_renderer'
 require 'alephant/models/parser'
 
+require 'alephant/logger'
 require 'alephant/errors'
 require 'alephant/views'
 
 module Alephant
   class Alephant
+    include ::Alephant::Logger
+
     attr_reader :sequencer, :queue, :cache, :renderer
 
     VALID_OPTS = [
@@ -28,19 +30,14 @@ module Alephant
     ]
 
     def initialize(opts = {}, logger = nil)
-      set_logger(logger)
+      ::Alephant::Logger.set_logger(logger) unless logger.nil?
       set_opts(opts)
 
-      @logger = ::Alephant.logger
       @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id)
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
       @multi_renderer = MultiRenderer.new(@component_id, @view_path)
       @parser = Parser.new
-    end
-
-    def set_logger(logger)
-      ::Alephant.logger = logger
     end
 
     def write(data)
@@ -50,13 +47,13 @@ module Alephant
     end
 
     def receive(msg)
-      @logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
+      logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
 
       if @sequencer.sequential?(msg)
         write @parser.parse msg.body
         @sequencer.set_last_seen(msg)
       else
-        @logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
+        logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
       end
     end
 
