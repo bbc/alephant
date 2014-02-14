@@ -1,13 +1,12 @@
 require_relative 'env'
 
-require 'alephant/sequencer'
-
 require 'alephant/models/queue'
-require 'alephant/models/cache'
 require 'alephant/models/renderer'
 require 'alephant/models/multi_renderer'
 require 'alephant/models/parser'
 
+require 'alephant/sequencer'
+require 'alephant/cache'
 require 'alephant/logger'
 require 'alephant/errors'
 require 'alephant/views'

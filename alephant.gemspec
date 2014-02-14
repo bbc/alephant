@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name          = 'alephant'
   s.version       = Alephant::VERSION
   s.date          = Time.now.strftime "%Y-%m-%d"
-  s.summary       = "Static Publishing in the Cloud"
+  s.summary       = "Static publishing in the cloud"
   s.description   = "Static publishing to S3 based on SQS messages"
   s.authors       = ["Robert Kenny"]
   s.email         = 'kenoir@gmail.com'
@@ -39,5 +39,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'alephant-sequencer'
   s.add_runtime_dependency 'alephant-logger'
+  s.add_runtime_dependency 'alephant-cache'
 end
 
