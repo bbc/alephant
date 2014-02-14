@@ -1,13 +1,13 @@
 require_relative 'env'
 
+require 'alephant/models/render_mapper'
+require 'alephant/models/jsonpath_lookup'
 require 'alephant/models/queue'
-require 'alephant/models/multi_renderer'
 require 'alephant/models/parser'
 
 require 'alephant/sequencer'
 require 'alephant/cache'
 require 'alephant/logger'
-require 'alephant/errors'
 require 'alephant/views'
 require 'alephant/renderer'
 
@@ -25,23 +25,28 @@ module Alephant
       :sqs_queue_id,
       :view_path,
       :component_id,
-      :sequence_id
+      :sequence_id_path,
+      :msg_vary_id_path
     ]
 
     def initialize(opts = {}, logger = nil)
       ::Alephant::Logger.set_logger(logger) unless logger.nil?
       set_opts(opts)
 
-      @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id)
+      @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id_path)
       @queue = Queue.new(@sqs_queue_id)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @multi_renderer = MultiRenderer.new(@component_id, @view_path)
+      @render_mapper = RenderMapper.new(@component_id, @view_path)
+      @jsonpath_lookup = @msg_vary_id_path ? JsonPathLookup.new(@msg_vary_id_path) : nil
       @parser = Parser.new
     end
 
-    def write(data)
-      @multi_renderer.render(data).each do |id, item|
-        @cache.put(id, item)
+    def write(msg)
+      data = @parser.parse msg.body
+      @render_mapper.generate(data).each do |id, renderer|
+        vary_on = @jsonpath_lookup ? @jsonpath_lookup.lookup(msg)
+        # alephant-lookup goes here!
+        @cache.put(id, renderer.render)
       end
     end
 
@@ -49,7 +54,7 @@ module Alephant
       logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
 
       if @sequencer.sequential?(msg)
-        write @parser.parse msg.body
+        write msg
         @sequencer.set_last_seen(msg)
       else
         logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
