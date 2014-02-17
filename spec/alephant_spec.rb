@@ -21,9 +21,10 @@ describe Alephant::Alephant do
         :s3_bucket_id     => :s3_bucket_id,
         :s3_object_path   => :s3_object_path,
         :s3_object_id     => :s3_object_id,
-        :table_name       => :table_name,
-        :sqs_queue_id     => :sqs_queue_id,
-        :component_id     => :component_id,
+        :sequencer_table_name       => :sequencer_table_name,
+        :lookup_table_name       => :lookup_table_name,
+        :sqs_queue_url     => :sqs_queue_url,
+        :renderer_id     => :renderer_id,
         :sequence_id_path => :sequence_id_path,
         :msg_vary_id_path => 'msg_vary_id_path'
       })
@@ -31,9 +32,10 @@ describe Alephant::Alephant do
       expect(instance.s3_bucket_id).to eq(:s3_bucket_id);
       expect(instance.s3_object_path).to eq(:s3_object_path);
       expect(instance.s3_object_id).to eq(:s3_object_id);
-      expect(instance.table_name).to eq(:table_name);
-      expect(instance.sqs_queue_id).to eq(:sqs_queue_id);
-      expect(instance.component_id).to eq(:component_id);
+      expect(instance.sequencer_table_name).to eq(:sequencer_table_name);
+      expect(instance.lookup_table_name).to eq(:lookup_table_name);
+      expect(instance.sqs_queue_url).to eq(:sqs_queue_url);
+      expect(instance.renderer_id).to eq(:renderer_id);
       expect(instance.sequence_id_path).to eq(:sequence_id_path);
       expect(instance.msg_vary_id_path).to eq('msg_vary_id_path');
     end
@@ -44,35 +46,35 @@ describe Alephant::Alephant do
       expect(instance.s3_bucket_id).to eq(nil);
       expect(instance.s3_object_path).to eq(nil);
       expect(instance.s3_object_id).to eq(nil);
-      expect(instance.table_name).to eq(nil);
-      expect(instance.sqs_queue_id).to eq(nil);
-      expect(instance.component_id).to eq(nil);
+      expect(instance.sequencer_table_name).to eq(nil);
+      expect(instance.sqs_queue_url).to eq(nil);
+      expect(instance.renderer_id).to eq(nil);
       expect(instance.sequence_id_path).to eq(nil);
       expect(instance.msg_vary_id_path).to eq(nil);
     end
 
     context "initializes @sequencer" do
-      it "with Sequencer.create(:table_name, @sqs_queue_id)" do
+      it "with Sequencer.create(:sequencer_table_name, @sqs_queue_url)" do
         Alephant::Sequencer
           .should_receive(:create)
-          .with(:table_name, :sqs_queue_id, :sequence_id_path)
+          .with(:sequencer_table_name, :sqs_queue_url, :sequence_id_path)
 
         instance = subject.new({
-          :table_name   => :table_name,
-          :sqs_queue_id => :sqs_queue_id,
+          :sequencer_table_name   => :sequencer_table_name,
+          :sqs_queue_url => :sqs_queue_url,
           :sequence_id_path => :sequence_id_path
         })
       end
     end
 
     context "initializes @queue" do
-      it "with Queue.new(@sqs_queue_id)" do
+      it "with Queue.new(@sqs_queue_url)" do
         Alephant::Queue
           .should_receive(:new)
-          .with(:sqs_queue_id)
+          .with(:sqs_queue_url)
 
         instance = subject.new({
-          :sqs_queue_id => :sqs_queue_id
+          :sqs_queue_url => :sqs_queue_url
         })
       end
     end
@@ -98,7 +100,7 @@ describe Alephant::Alephant do
 
         instance = subject.new({
           :view_path    => 'components',
-          :component_id => 'foo'
+          :renderer_id => 'foo'
         })
       end
     end
@@ -119,7 +121,7 @@ describe Alephant::Alephant do
 
     it "returns a Thread" do
       instance = subject.new({
-        :sqs_queue_id => :sqs_queue_id
+        :sqs_queue_url => :sqs_queue_url
       })
 
       expect(instance.run!).to be_a(Thread)
@@ -127,7 +129,7 @@ describe Alephant::Alephant do
 
     it "calls @queue.poll" do
       instance = subject.new({
-        :sqs_queue_id => :sqs_queue_id
+        :sqs_queue_url => :sqs_queue_url
       })
 
       instance.should_receive(:receive).with(:msg)

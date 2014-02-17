@@ -10,6 +10,7 @@ require 'alephant/cache'
 require 'alephant/logger'
 require 'alephant/views'
 require 'alephant/renderer'
+require 'alephant/lookup'
 
 module Alephant
   class Alephant
@@ -20,11 +21,11 @@ module Alephant
     VALID_OPTS = [
       :s3_bucket_id,
       :s3_object_path,
-      :s3_object_id,
-      :table_name,
-      :sqs_queue_id,
+      :sequencer_table_name,
+      :lookup_table_name,
+      :sqs_queue_url,
       :view_path,
-      :component_id,
+      :renderer_id,
       :sequence_id_path,
       :msg_vary_id_path
     ]
@@ -33,20 +34,21 @@ module Alephant
       ::Alephant::Logger.set_logger(logger) unless logger.nil?
       set_opts(opts)
 
-      @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id_path)
-      @queue = Queue.new(@sqs_queue_id)
+      @sequencer = Sequencer.create(@sequencer_table_name, @sqs_queue_url, @sequence_id_path)
+      @queue = Queue.new(@sqs_queue_url)
       @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @render_mapper = RenderMapper.new(@component_id, @view_path)
+      @render_mapper = RenderMapper.new(@renderer_id, @view_path)
       @jsonpath_lookup = @msg_vary_id_path ? JsonPathLookup.new(@msg_vary_id_path) : nil
       @parser = Parser.new
     end
 
     def write(msg)
       data = @parser.parse msg.body
-      @render_mapper.generate(data).each do |id, renderer|
-        vary_on = @jsonpath_lookup ? @jsonpath_lookup.lookup(msg) : nil
-        # alephant-lookup goes here!
-        @cache.put(id, renderer.render)
+      @render_mapper.generate(data).each do |component_id, renderer|
+
+        location = location_for(component_id, msg)
+        @cache.put(location, renderer.render)
+        write_location_for(component_id, location, msg)
       end
     end
 
@@ -76,6 +78,23 @@ module Alephant
         end
         send("#{k}=", v)
       end
+    end
+
+    def options_for(msg)
+      opts = {}
+      opts[:variant] = @jsonpath_lookup.lookup(msg.body) if @jsonpath_lookup
+
+      opts
+    end
+
+    def write_location_for(component_id, location, msg)
+      lookup = Lookup.create(@lookup_table_name, component_id)
+      lookup.write(options_for(msg), location)
+    end
+
+    def location_for(component_id, msg)
+      sequence_id = @sequencer.sequence_id_from(msg)
+      "#{@renderer_id}_#{component_id}_#{sequence_id}"
     end
 
   end
