@@ -46,19 +46,20 @@ module Alephant
       data = parse msg
 
       @render_mapper.generate(data).each do |component_id, renderer|
-        render(component_id, renderer, msg, data[:options])
+        location = location_for(component_id, msg)
+
+        @cache.put(location, renderer.render)
+        Lookup.create(
+          @lookup_table_name,
+          component_id
+        ).write(data[:options], location)
       end
+
+      @sequencer.set_last_seen(msg)
     end
 
     def receive(msg)
-      logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
-
-      if @sequencer.sequential?(msg)
-        write msg
-        @sequencer.set_last_seen(msg)
-      else
-        logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
-      end
+      write msg if @sequencer.sequential?(msg)
     end
 
     def run!
@@ -79,32 +80,15 @@ module Alephant
     end
 
     def options_for(msg)
-      opts = {}
-      opts[:variant] = @jsonpath_lookup.lookup(msg.body) if @jsonpath_lookup
-
-      opts
-    end
-
-    def set_lookup_location(component_id, location, options)
-      lookup = Lookup.create(@lookup_table_name, component_id)
-      lookup.write(options, location)
+      {}.tap { |o| o[:variant] = @jsonpath_lookup.lookup(msg.body) if @jsonpath_lookup }
     end
 
     def location_for(component_id, msg)
-      sequence_id = @sequencer.sequence_id_from(msg)
-      "#{@renderer_id}_#{component_id}_#{sequence_id}"
+      "#{@renderer_id}_#{component_id}_#{@sequencer.sequence_id_from(msg)}"
     end
 
     def parse(msg)
-      data = @parser.parse msg.body
-      data[:options] = options_for msg
-      data
-    end
-
-    def render(component_id, renderer, msg, options)
-      location = location_for(component_id, msg)
-      @cache.put(location, renderer.render)
-      set_lookup_location(component_id, location, options)
+      @parser.parse(msg.body).tap { |o| o[:options] = options_for msg }
     end
 
   end
