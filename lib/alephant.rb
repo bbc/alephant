@@ -43,12 +43,10 @@ module Alephant
     end
 
     def write(msg)
-      data = @parser.parse msg.body
-      @render_mapper.generate(data).each do |component_id, renderer|
+      data = parse msg
 
-        location = location_for(component_id, msg)
-        @cache.put(location, renderer.render)
-        write_location_for(component_id, location, msg)
+      @render_mapper.generate(data).each do |component_id, renderer|
+        render(component_id, renderer, msg, data[:options])
       end
     end
 
@@ -87,14 +85,26 @@ module Alephant
       opts
     end
 
-    def write_location_for(component_id, location, msg)
+    def set_lookup_location(component_id, location, options)
       lookup = Lookup.create(@lookup_table_name, component_id)
-      lookup.write(options_for(msg), location)
+      lookup.write(options, location)
     end
 
     def location_for(component_id, msg)
       sequence_id = @sequencer.sequence_id_from(msg)
       "#{@renderer_id}_#{component_id}_#{sequence_id}"
+    end
+
+    def parse(msg)
+      data = @parser.parse msg.body
+      data[:options] = options_for msg
+      data
+    end
+
+    def render(component_id, renderer, msg, options)
+      location = location_for(component_id, msg)
+      @cache.put(location, renderer.render)
+      set_lookup_location(component_id, location, options)
     end
 
   end
