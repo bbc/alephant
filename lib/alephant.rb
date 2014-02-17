@@ -44,7 +44,7 @@ module Alephant
     def write(msg)
       data = @parser.parse msg.body
       @render_mapper.generate(data).each do |id, renderer|
-        vary_on = @jsonpath_lookup ? @jsonpath_lookup.lookup(msg)
+        vary_on = @jsonpath_lookup ? @jsonpath_lookup.lookup(msg) : nil
         # alephant-lookup goes here!
         @cache.put(id, renderer.render)
       end
