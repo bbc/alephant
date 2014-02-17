@@ -32,9 +32,9 @@ module Alephant
     end
 
     private
-    def instantiate_model(template_file, data)
-      require model_location_for template_file
-      Views.get_registered_class("#{@component_id}_#{template_file}").new(data)
+    def instantiate_model(view_id, data)
+      require model_location_for view_id
+      Views.get_registered_class(view_id).new(data)
     end
 
     private
