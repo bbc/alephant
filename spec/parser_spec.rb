@@ -1,19 +1,27 @@
 require 'spec_helper'
 
 describe Alephant::Parser do
-
-  let (:instance) { Alephant::Parser }
-  subject { Alephant::Parser }
-
   describe "parse(msg)" do
+    let(:msg) { Struct.new(:body).new("{ \"foo\":\"bar\" }") }
+    let(:msg_with_options) do
+      Struct.new(:body).new(<<-EOS)
+          {
+            "some" : {
+              "location" : "bar"
+            }
+          }
+      EOS
+    end
     it "returns parsed JSON with symbolized keys" do
-      data = "{ \"foo\":\"bar\" }"
+      subject.parse(msg)[:foo].should eq 'bar'
+    end
 
-      instance = subject.new.parse data
-      key = instance.keys[0]
+    context "initialized with vary_jsonpath" do
+      subject { Alephant::Parser.new('$.some.location') }
 
-      key.should be_a Symbol
-      instance[key].should eq 'bar'
+      it "adds the correct :options to the returned hash" do
+        expect(subject.parse(msg_with_options)[:options][:variant]).to eq "bar"
+      end
     end
   end
 end
