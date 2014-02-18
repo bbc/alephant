@@ -4,7 +4,7 @@ module Alephant::Views
   class Base < Mustache
     attr_accessor :data
 
-    def initialize(data)
+    def initialize(data = {})
       @data = data
     end
 
