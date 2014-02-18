@@ -1,59 +1,48 @@
 require_relative 'env'
 
-require 'alephant/models/queue'
-require 'alephant/models/multi_renderer'
+require 'alephant/models/render_mapper'
 require 'alephant/models/parser'
+require 'alephant/models/writer'
+require 'alephant/models/queue'
 
 require 'alephant/sequencer'
 require 'alephant/cache'
 require 'alephant/logger'
-require 'alephant/errors'
 require 'alephant/views'
 require 'alephant/renderer'
+require 'alephant/lookup'
 
 module Alephant
   class Alephant
     include ::Alephant::Logger
 
-    attr_reader :sequencer, :queue, :cache, :renderer
-
-    VALID_OPTS = [
-      :s3_bucket_id,
-      :s3_object_path,
-      :s3_object_id,
-      :table_name,
-      :sqs_queue_id,
-      :view_path,
-      :component_id,
-      :sequence_id
-    ]
+    attr_reader :sequencer, :queue, :writer, :parser
 
     def initialize(opts = {}, logger = nil)
       ::Alephant::Logger.set_logger(logger) unless logger.nil?
-      set_opts(opts)
 
-      @sequencer = Sequencer.create(@table_name, @sqs_queue_id, @sequence_id)
-      @queue = Queue.new(@sqs_queue_id)
-      @cache = Cache.new(@s3_bucket_id, @s3_object_path)
-      @multi_renderer = MultiRenderer.new(@component_id, @view_path)
-      @parser = Parser.new
-    end
-
-    def write(data)
-      @multi_renderer.render(data).each do |id, item|
-        @cache.put(id, item)
-      end
-    end
-
-    def receive(msg)
-      logger.info("Alephant.receive: with id #{msg.id} and body digest: #{msg.md5}")
-
-      if @sequencer.sequential?(msg)
-        write @parser.parse msg.body
-        @sequencer.set_last_seen(msg)
-      else
-        logger.warn("Alephant.receive: out of sequence message received #{msg.id} (discarded)")
-      end
+      @parser = Parser.new(
+        opts[:msg_vary_id_path]
+      )
+      @sequencer = Sequencer.create(
+        opts[:sequencer_table_name],
+        opts[:sqs_queue_url],
+        opts[:sequence_id_path]
+      )
+      @queue = Queue.new(
+        opts[:sqs_queue_url]
+      )
+      @writer = Writer.new(
+        opts.select do |k,v|
+          [
+            :renderer_id,
+            :s3_bucket_id,
+            :s3_object_path,
+            :view_path,
+            :lookup_table_name
+          ].include? k
+        end
+      )
     end
 
     def run!
@@ -62,15 +51,14 @@ module Alephant
       end
     end
 
+    def receive(msg)
+      write msg if sequencer.sequential?(msg)
+    end
+
     private
-    def set_opts(opts)
-      VALID_OPTS.each do | k |
-        v = opts.has_key?(k) ? opts[k] : nil
-        singleton_class.class_eval do
-          attr_accessor k
-        end
-        send("#{k}=", v)
-      end
+    def write(msg)
+      writer.write(parser.parse(msg), sequencer.sequence_id_from(msg))
+      sequencer.set_last_seen(msg)
     end
 
   end
