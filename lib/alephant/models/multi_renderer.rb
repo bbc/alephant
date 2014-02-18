@@ -64,7 +64,7 @@ module Alephant
     private
     def create_model(template_file, data)
       require model_location_for template_file
-      klass = Views.get_registered_class("#{@component_id}_#{template_file}")
+      klass = Views.get_registered_class("#{template_file}")
 
       logger.info("MultiRenderer.create_model: creating new klass #{klass}")
       klass.new(data)
