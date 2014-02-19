@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.license       = 'GPLv3'
 
   s.files         = `git ls-files`.split($/)
-  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.platform      = "java"
   s.homepage      = 'https://github.com/BBC-News/alephant'
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
