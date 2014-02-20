@@ -36,8 +36,8 @@ module Alephant
     end
 
     def location_for(component_id, version = nil)
-      base_name = "#{@renderer_id}_#{component_id}"
-      version ? "#{base_name}_#{version}" : base_name
+      base_name = "#{@renderer_id}/#{component_id}"
+      version ? "#{base_name}/#{version}" : base_name
     end
 
   end
