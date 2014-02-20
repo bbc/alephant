@@ -35,7 +35,7 @@ describe Alephant::Writer do
         .stub(:initialize)
       Alephant::Lookup::Lookup.any_instance
         .should_receive(:write)
-        .with(options, 'renderer_id/component_id/0')
+        .with(options, 'renderer_id/component_id/42de5e5c6f74b9fe4d956704a6d9e1c7/0')
 
       subject.write(data, 0)
     end
@@ -44,7 +44,7 @@ describe Alephant::Writer do
       Alephant::Lookup::Lookup.any_instance.stub(:initialize)
       Alephant::Lookup::Lookup.any_instance.stub(:write)
       Alephant::Cache.any_instance
-        .should_receive(:put).with('renderer_id/component_id/0', 'content')
+        .should_receive(:put).with('renderer_id/component_id/35589a1cc0b3ca90fc52d0e711c0c434/0', 'content')
 
       subject.write({}, 0)
     end

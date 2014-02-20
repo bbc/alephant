@@ -1,4 +1,5 @@
 require 'alephant/models/jsonpath_lookup'
+require 'crimp'
 
 module Alephant
   class Writer
@@ -21,12 +22,18 @@ module Alephant
 
     def write(data, version = nil)
       mapper.generate(data).each do |id, r|
-        store(id, r.render, location_for(id, version), data[:options])
+        store(id, r.render, data[:options], version)
       end
     end
 
     private
-    def store(id, content, location, options)
+    def store(id, content, options, version)
+      location = location_for(
+        id,
+        Crimp.signature(options),
+        version
+      )
+
       cache.put(location, content)
       lookup(id).write(options, location)
     end
@@ -35,8 +42,8 @@ module Alephant
       Lookup.create(@lookup_table_name, component_id)
     end
 
-    def location_for(component_id, version = nil)
-      base_name = "#{@renderer_id}/#{component_id}"
+    def location_for(component_id, options_hash, version = nil)
+      base_name = "#{@renderer_id}/#{component_id}/#{options_hash}"
       version ? "#{base_name}/#{version}" : base_name
     end
 
