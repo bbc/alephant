@@ -9,7 +9,7 @@ module Alephant
     end
 
     def parse(msg)
-      symbolize(msg.body).tap { |o| o[:options] = options_for msg }
+      symbolize(msg.body).tap { |o| o[:options] = options_for msg unless not o[:options].nil? }
     end
 
     private
