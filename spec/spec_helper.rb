@@ -4,4 +4,5 @@ require 'pry'
 require 'alephant'
 require 'logger'
 require 'alephant/renderer'
+require 'alephant/support/parser'
 

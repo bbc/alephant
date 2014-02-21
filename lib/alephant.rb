@@ -1,7 +1,7 @@
 require_relative 'env'
 
 require 'alephant/models/render_mapper'
-require 'alephant/models/parser'
+require 'alephant/support'
 require 'alephant/models/writer'
 require 'alephant/models/queue'
 
@@ -21,7 +21,7 @@ module Alephant
     def initialize(opts = {}, logger = nil)
       ::Alephant::Logger.set_logger(logger) unless logger.nil?
 
-      @parser = Parser.new(
+      @parser = Support::Parser.new(
         opts[:msg_vary_id_path]
       )
       @sequencer = Sequencer.create(
