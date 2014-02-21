@@ -1,5 +1,6 @@
 require "alephant/version"
+require "alephant/publisher"
 
 module Alephant
-  # Your code goes here...
+  # Consuming application calls: `Alephant::Publisher.create`
 end
