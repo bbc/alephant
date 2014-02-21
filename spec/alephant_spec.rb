@@ -5,7 +5,7 @@ describe Alephant::Alephant do
   before(:each) do
     Alephant::Writer.any_instance.stub(:initialize)
     Alephant::Queue.any_instance.stub(:initialize)
-    Alephant::Parser.any_instance.stub(:initialize)
+    Alephant::Support::Parser.any_instance.stub(:initialize)
     Alephant::Sequencer::Sequencer.any_instance.stub(:initialize)
   end
 
@@ -13,7 +13,7 @@ describe Alephant::Alephant do
     it "sets parser, sequencer, queue and writer" do
       expect(subject.writer).to be_a Alephant::Writer
       expect(subject.queue).to be_a Alephant::Queue
-      expect(subject.parser).to be_a Alephant::Parser
+      expect(subject.parser).to be_a Alephant::Support::Parser
       expect(subject.sequencer).to be_a Alephant::Sequencer::Sequencer
     end
   end
@@ -39,7 +39,7 @@ describe Alephant::Alephant do
     subject { Alephant::Alephant.new }
 
     before(:each) do
-      Alephant::Parser.any_instance
+      Alephant::Support::Parser.any_instance
         .stub(:parse)
         .and_return(:parsed_msg)
       Alephant::Sequencer::Sequencer

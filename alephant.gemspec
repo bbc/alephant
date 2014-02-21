@@ -43,5 +43,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'alephant-renderer'
   s.add_runtime_dependency 'alephant-lookup'
   s.add_runtime_dependency 'alephant-preview'
+  s.add_runtime_dependency 'alephant-support'
 end
 
