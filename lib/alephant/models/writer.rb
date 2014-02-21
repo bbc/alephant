@@ -1,4 +1,3 @@
-require 'alephant/models/jsonpath_lookup'
 require 'crimp'
 
 module Alephant
