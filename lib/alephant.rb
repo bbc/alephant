@@ -1,7 +1,7 @@
 require_relative 'env'
 
 require 'alephant/models/render_mapper'
-require 'alephant/support'
+require 'alephant/support/parser'
 require 'alephant/models/writer'
 require 'alephant/models/queue'
 
