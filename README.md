@@ -1,6 +1,6 @@
 # Alephant
 
-TODO: Write a gem description
+This is the main entry point for the Alephant framework.
 
 ## Installation
 
@@ -18,11 +18,30 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'alephant'
+require 'configuration'
+
+class App
+  def initialize
+    @config = Configuration.new
+    @alephant = Alephant::Publisher.create(@config.app_config, logger)
+  end
+
+  def run!
+    t = @alephant.run!
+    t.join
+  end
+
+  def logger
+    @logger ||= LoggerFactory.create(@config)
+  end
+end
+```
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/alephant/fork )
+1. Fork it ( http://github.com/BBC-News/alephant/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
