@@ -21,5 +21,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
 
-  spec.add_runtime_dependency "alephant-publisher"
+  spec.add_runtime_dependency 'alephant-publisher'
+  spec.add_runtime_dependency 'alephant-support'
+  spec.add_runtime_dependency 'alephant-sequencer'
+  spec.add_runtime_dependency 'alephant-cache'
+  spec.add_runtime_dependency 'alephant-logger'
+  spec.add_runtime_dependency 'alephant-renderer'
+  spec.add_runtime_dependency 'alephant-lookup'
+  spec.add_runtime_dependency 'alephant-preview'
 end
