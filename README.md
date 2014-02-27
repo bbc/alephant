@@ -1,159 +1,58 @@
-alephant
-=========
+# Alephant
 
-Static publishing to S3 on push notification from SQS
+This is the main entry point for the Alephant framework.
 
-[![Code Climate](https://codeclimate.com/repos/52d6bec56956802e26011a0f/badges/fce457795179641460e0/gpa.png)](https://codeclimate.com/repos/52d6bec56956802e26011a0f/feed)
+Requires:
+ - https://github.com/BBC-News/alephant-publisher [![Build Status](https://travis-ci.org/BBC-News/alephant-publisher.png?branch=master)](https://travis-ci.org/BBC-News/alephant-publisher) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-publisher.png)](https://gemnasium.com/BBC-News/alephant-publisher) [![Gem Version](https://badge.fury.io/rb/alephant-publisher.png)](http://badge.fury.io/rb/alephant-publisher)
+ - https://github.com/BBC-News/alephant-support [![Build Status](https://travis-ci.org/BBC-News/alephant-support.png?branch=master)](https://travis-ci.org/BBC-News/alephant-support) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-support.png)](https://gemnasium.com/BBC-News/alephant-support) [![Gem Version](https://badge.fury.io/rb/alephant-support.png)](http://badge.fury.io/rb/alephant-support)
+ - https://github.com/BBC-News/alephant-sequencer [![Build Status](https://travis-ci.org/BBC-News/alephant-sequencer.png?branch=master)](https://travis-ci.org/BBC-News/alephant-sequencer) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-sequencer.png)](https://gemnasium.com/BBC-News/alephant-sequencer) [![Gem Version](https://badge.fury.io/rb/alephant-sequencer.png)](http://badge.fury.io/rb/alephant-sequencer)
+ - https://github.com/BBC-News/alephant-cache [![Build Status](https://travis-ci.org/BBC-News/alephant-cache.png?branch=master)](https://travis-ci.org/BBC-News/alephant-cache) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-cache.png)](https://gemnasium.com/BBC-News/alephant-cache) [![Gem Version](https://badge.fury.io/rb/alephant-cache.png)](http://badge.fury.io/rb/alephant-cache)
+ - https://github.com/BBC-News/alephant-logger [![Build Status](https://travis-ci.org/BBC-News/alephant-logger.png?branch=master)](https://travis-ci.org/BBC-News/alephant-logger) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-logger.png)](https://gemnasium.com/BBC-News/alephant-logger) [![Gem Version](https://badge.fury.io/rb/alephant-logger.png)](http://badge.fury.io/rb/alephant-logger)
+ - https://github.com/BBC-News/alephant-renderer [![Build Status](https://travis-ci.org/BBC-News/alephant-renderer.png?branch=master)](https://travis-ci.org/BBC-News/alephant-renderer) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-renderer.png)](https://gemnasium.com/BBC-News/alephant-renderer) [![Gem Version](https://badge.fury.io/rb/alephant-renderer.png)](http://badge.fury.io/rb/alephant-renderer)
+ - https://github.com/BBC-News/alephant-lookup [![Build Status](https://travis-ci.org/BBC-News/alephant-lookup.png?branch=master)](https://travis-ci.org/BBC-News/alephant-lookup) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-lookup.png)](https://gemnasium.com/BBC-News/alephant-lookup) [![Gem Version](https://badge.fury.io/rb/alephant-lookup.png)](http://badge.fury.io/rb/alephant-lookup)
+ - https://github.com/BBC-News/alephant-preview [![Build Status](https://travis-ci.org/BBC-News/alephant-preview.png?branch=master)](https://travis-ci.org/BBC-News/alephant-preview) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-preview.png)](https://gemnasium.com/BBC-News/alephant-preview) [![Gem Version](https://badge.fury.io/rb/alephant-preview.png)](http://badge.fury.io/rb/alephant-preview)
 
-[![Build Status](https://travis-ci.org/BBC-News/alephant.png?branch=master)](https://travis-ci.org/BBC-News/alephant)
+## Installation
 
-[![Dependency Status](https://gemnasium.com/BBC-News/alephant.png)](https://gemnasium.com/BBC-News/alephant)
+Add this line to your application's Gemfile:
 
-[![Gem Version](https://badge.fury.io/rb/alephant.png)](http://badge.fury.io/rb/alephant)
+    gem 'alephant'
 
-##Dependencies
+And then execute:
 
-- JRuby 1.7.8
-- An AWS account (you'll need to create):
-  - An S3 bucket
-  - An SQS Queue (if no sequence id provided then `sequence_id` will be used)
-  - A Dynamo DB table (optional, will attempt to create if can't be found)
+    $ bundle
 
-##Setup
+Or install it yourself as:
 
-Ensure you have a `config/aws.yml` in the format:
+    $ gem install alephant
 
-```yaml
-access_key_id: ACCESS_KEY_ID
-secret_access_key: SECRET_ACCESS_KEY
-```
+## Usage
 
-Install the gem:
-
-```sh
-gem install alephant
-```
-
-In your application:
-
-```rb
+```ruby
 require 'alephant'
-opts = {
-  :s3_bucket_id => 'bucket-id',
-  :s3_object_path => 'path/to/object',
-  :s3_object_id => 'object_id',
-  :table_name => 'your_dynamo_db_table',
-  :sqs_queue_id => 'https://your_amazon_sqs_queue_url',
-  :sequential_proc => Proc.new { |last_seen_id, data|
-    last_seen_id < data["sequence_id"].to_i
-  },
-  :set_last_seen_proc => Proc.new { |data|
-    data["sequence_id"].to_i
-  }
-}
+require 'configuration'
 
-logger = Logger.new
+class App
+  def initialize
+    @config = Configuration.new
+    @alephant = Alephant::Publisher.create(@config.app_config, logger)
+  end
 
-thread = Alephant::Alephant.new(opts, logger).run!
-thread.join
-```
+  def run!
+    t = @alephant.run!
+    t.join
+  end
 
-logger is optional, and must confirm to the Ruby standard logger interface
-
-Provide a view in a folder (fixtures are optional):
-
-```
-└── views
-    ├── models
-    │   └── foo.rb
-    ├── fixtures
-    │   └── foo.json
-    └── templates
-        └── foo.mustache
-```
-
-**SQS Message Format**
-
-```json
-{
-  "content": "hello world",
-  "sequential_id": 1
-}
-```
-
-**foo.rb**
-
-```rb
-module MyApp
-  module Views
-    class Foo < Alephant::Views::Base
-      def content
-        @data['content']
-      end
-    end
+  def logger
+    @logger ||= LoggerFactory.create(@config)
   end
 end
 ```
 
-**foo.mustache**
+## Contributing
 
-```mustache
-{{content}}
-```
-
-**S3 Output**
-
-```
-hello world
-```
-
-###Preview Server
-
-`alephant preview`
-
-The included preview server allows you to see the html generated by your
-templates, both standalone and in the context of a page.
-
-**Standalone**
-
-`/component/:id/?:fixture?`
-
-####Full page preview
-
-When viewing the component in the context of a page, you'll need to retrieve a
-mustache template to provide the page context.
-
-When performing an update a regex is applied to replace the static hostnames in
-the retrieved html.
-
-**Environment Variables**
-
-```sh
-STATIC_HOST_REGEX="static.(sandbox.dev|int|test|stage|live).yourapp(i)?.com\/"
-PREVIEW_TEMPLATE_URL="http://yourapp.com/template"
-```
-
-**Example Remote Template**
-
-`id` is the component/folder name  
-
-`template` is the mustache template file name  
-
-`location_in_page` should be something like (for example) `page_head` (specified within a `preview.mustache` file that the consuming application needs to create).
-
-- `http://localhost:4567/component/id/template`
-- `http://localhost:4567/preview/id/template/location_in_page`
-
-`alephant update`
-
-**In page**
-
-`/preview/:id/:region/?:fixture?`
-
-## Build the gem locally
-
-If you want to test a modified version of the gem within your application without publishing it then you can follow these steps...
-
-- `gem uninstall alephant`
-- `gem build alephant.gemspec` (this will report the file generated which you reference in the next command)
-- `gem install ./alephant-0.0.9.1-java.gem`
+1. Fork it ( http://github.com/BBC-News/alephant/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request

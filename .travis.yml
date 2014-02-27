@@ -1,9 +1,0 @@
-language: ruby
-rvm:
-  - "jruby"
-notifications:
-  email:
-    recipients:
-      - kenoir@gmail.com
-    on_failure: change
-    on_success: never
