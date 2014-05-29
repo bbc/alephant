@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'alephant-renderer'
   spec.add_runtime_dependency 'alephant-lookup'
   spec.add_runtime_dependency 'alephant-preview'
+  spec.add_runtime_dependency 'alephant-broker'
 end
