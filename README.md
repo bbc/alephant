@@ -1,69 +1,50 @@
 # Alephant
 
-This is the main entry point for the Alephant framework.
+The Alephant framework is a collection of isolated Ruby gems, which interconnect to offer powerful message passing functionality built up around the "Broker" pattern. 
 
-Requires:
+Alephant is being utilised by many different BBC teams and as the underlying framework for many different BBC based projects.
 
- - [alephant-broker](https://github.com/BBC-News/alephant-broker)       
- [![Build Status](https://travis-ci.org/BBC-News/alephant-broker.png?branch=master)](https://travis-ci.org/BBC-News/alephant-broker) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-broker.png)](https://gemnasium.com/BBC-News/alephant-broker) [![Gem Version](https://badge.fury.io/rb/alephant-broker.png)](http://badge.fury.io/rb/alephant-broker)
- - [alephant-renderer](https://github.com/BBC-News/alephant-renderer)         
- [![Build Status](https://travis-ci.org/BBC-News/alephant-renderer.png?branch=master)](https://travis-ci.org/BBC-News/alephant-renderer) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-renderer.png)](https://gemnasium.com/BBC-News/alephant-renderer) [![Gem Version](https://badge.fury.io/rb/alephant-renderer.png)](http://badge.fury.io/rb/alephant-renderer)
- - [alephant-support](https://github.com/BBC-News/alephant-support)       
- [![Build Status](https://travis-ci.org/BBC-News/alephant-support.png?branch=master)](https://travis-ci.org/BBC-News/alephant-support) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-support.png)](https://gemnasium.com/BBC-News/alephant-support) [![Gem Version](https://badge.fury.io/rb/alephant-support.png)](http://badge.fury.io/rb/alephant-support)
- - [alephant-sequencer](https://github.com/BBC-News/alephant-sequencer)       
- [![Build Status](https://travis-ci.org/BBC-News/alephant-sequencer.png?branch=master)](https://travis-ci.org/BBC-News/alephant-sequencer) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-sequencer.png)](https://gemnasium.com/BBC-News/alephant-sequencer) [![Gem Version](https://badge.fury.io/rb/alephant-sequencer.png)](http://badge.fury.io/rb/alephant-sequencer)
- - [alephant-cache](https://github.com/BBC-News/alephant-cache)       
- [![Build Status](https://travis-ci.org/BBC-News/alephant-cache.png?branch=master)](https://travis-ci.org/BBC-News/alephant-cache) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-cache.png)](https://gemnasium.com/BBC-News/alephant-cache) [![Gem Version](https://badge.fury.io/rb/alephant-cache.png)](http://badge.fury.io/rb/alephant-cache)
- - [alephant-logger](https://github.com/BBC-News/alephant-logger)        
- [![Build Status](https://travis-ci.org/BBC-News/alephant-logger.png?branch=master)](https://travis-ci.org/BBC-News/alephant-logger) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-logger.png)](https://gemnasium.com/BBC-News/alephant-logger) [![Gem Version](https://badge.fury.io/rb/alephant-logger.png)](http://badge.fury.io/rb/alephant-logger)
- - [alephant-lookup](https://github.com/BBC-News/alephant-lookup)      
- [![Build Status](https://travis-ci.org/BBC-News/alephant-lookup.png?branch=master)](https://travis-ci.org/BBC-News/alephant-lookup) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-lookup.png)](https://gemnasium.com/BBC-News/alephant-lookup) [![Gem Version](https://badge.fury.io/rb/alephant-lookup.png)](http://badge.fury.io/rb/alephant-lookup)
- - [alephant-preview](https://github.com/BBC-News/alephant-preview)       
- [![Build Status](https://travis-ci.org/BBC-News/alephant-preview.png?branch=master)](https://travis-ci.org/BBC-News/alephant-preview) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-preview.png)](https://gemnasium.com/BBC-News/alephant-preview) [![Gem Version](https://badge.fury.io/rb/alephant-preview.png)](http://badge.fury.io/rb/alephant-preview)
+## TODO
 
-Deprecated:
+Provide a simple example application so users can get up and running with the Alephant framework much more quickly and easily; as well as providing architectural diagrams and details for each individual Alephant gem.
 
- - [alephant-publisher](https://github.com/BBC-News/alephant-publisher)      
- [![Build Status](https://travis-ci.org/BBC-News/alephant-publisher.png?branch=master)](https://travis-ci.org/BBC-News/alephant-publisher) [![Dependency Status](https://gemnasium.com/BBC-News/alephant-publisher.png)](https://gemnasium.com/BBC-News/alephant-publisher) [![Gem Version](https://badge.fury.io/rb/alephant-publisher.png)](http://badge.fury.io/rb/alephant-publisher)
+## Supported Rubies
 
-**Note**: the [alephant-publisher](https://github.com/BBC-News/alephant-publisher) gem has been replaced by two new *publisher* gems; [alephant-publisher-queue](https://github.com/BBC-News/alephant-publisher-queue) and [alephant-publisher-request](https://github.com/BBC-News/alephant-publisher-request). 
+- [MRI](https://www.ruby-lang.org/)
+- [JRuby](http://jruby.org/)
+- [Rubinius](http://rubini.us/)
 
-## Installation
+## Alephant Gems
 
-Add this line to your application's Gemfile:
+- [Alephant-Broker](https://github.com/BBC-News/alephant-broker)
+- [Alephant-Cache](https://github.com/BBC-News/alephant-cache) (soon to be renamed "Alephant-Storage")
+- [Alephant-Harness](https://github.com/BBC-News/alephant-harness)
+- [Alephant-Logger](https://github.com/BBC-News/alephant-logger)
+- [Alephant-Lookup](https://github.com/BBC-News/alephant-lookup)
+- [Alephant-Preview](https://github.com/BBC-News/alephant-preview)
+- [Alephant-Publisher](https://github.com/BBC-News/alephant-publisher) (deprecated)
+- [Alephant-Publisher-Queue](https://github.com/BBC-News/alephant-publisher-queue)
+- [Alephant-Publisher-Request](https://github.com/BBC-News/alephant-publisher-request)
+- [Alephant-Renderer](https://github.com/BBC-News/alephant-renderer)
+- [Alephant-Scout](https://github.com/BBC-News/alephant-scout)
+- [Alephant-Sequencer](https://github.com/BBC-News/alephant-sequencer)
+- [Alephant-Support](https://github.com/BBC-News/alephant-support)
 
-    gem 'alephant'
+> Note: the [alephant-publisher](https://github.com/BBC-News/alephant-publisher) gem has been replaced by two new *publisher* gems: [alephant-publisher-queue](https://github.com/BBC-News/alephant-publisher-queue) and [alephant-publisher-request](https://github.com/BBC-News/alephant-publisher-request). 
 
-And then execute:
+### Interlinked...
 
-    $ bundle
+The following mind map demonstrates how each of the gems (currently available) within the Alephant framework are linked together.
 
-Or install it yourself as:
+![alephant mind map](https://cloud.githubusercontent.com/assets/180050/5049794/560519a0-6c20-11e4-8ac4-302ee02352cc.png)
 
-    $ gem install alephant
+## Past life
 
-## Usage
+In a past life this repository hosted a gem of the name Alephant (which you can still find linked to on [RubyGems](https://rubygems.org/gems/alephant)).
 
-```ruby
-require 'alephant'
-require 'configuration'
+The gem has been deprecated in favour of an information portal, which will discuss the different gems available as part of the Alephant framework and provide details on how to utilise them.
 
-class App
-  def initialize
-    @config = Configuration.new
-    @alephant = Alephant::Publisher.create(@config.app_config, logger)
-  end
-
-  def run!
-    t = @alephant.run!
-    t.join
-  end
-
-  def logger
-    @logger ||= LoggerFactory.create(@config)
-  end
-end
-```
+We strongly recommend you no longer use the [Alephant gem](https://rubygems.org/gems/alephant) as it is deprecated.
 
 ## Contributing
 
