@@ -32,7 +32,7 @@ We will also aim to include information regarding the architectural pattern the 
 - [Alephant-Sequencer](https://github.com/BBC-News/alephant-sequencer)
 - [Alephant-Support](https://github.com/BBC-News/alephant-support)
 
-> Note: the [alephant-publisher](https://github.com/BBC-News/alephant-publisher) gem has been replaced by two new *publisher* gems: [alephant-publisher-queue](https://github.com/BBC-News/alephant-publisher-queue) and [alephant-publisher-request](https://github.com/BBC-News/alephant-publisher-request). 
+> Note: the [Alephant-Publisher](https://github.com/BBC-News/alephant-publisher) gem has been replaced by two new *publisher* gems: [Alephant-Publisher-Queue](https://github.com/BBC-News/alephant-publisher-queue) and [Alephant-Publisher-Request](https://github.com/BBC-News/alephant-publisher-request). 
 
 ### Interlinked...
 
