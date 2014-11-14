@@ -8,6 +8,8 @@ Alephant is being utilised by many different BBC teams and as the underlying fra
 
 Provide a simple example application so users can get up and running with the Alephant framework much more quickly and easily; as well as providing architectural diagrams and details for each individual Alephant gem.
 
+We will also aim to include information regarding the architectural pattern the Alephant framework is based upon.
+
 ## Supported Rubies
 
 - [MRI](https://www.ruby-lang.org/)
