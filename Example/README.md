@@ -53,7 +53,12 @@ Note: if Boot2Docker or Spurious are already running then you can skip the follo
 
 ### Renderer
 
-...
+1. `cd Renderer`
+2. `bundle install`
+3. `rake harness` (sets up S3 bucket based on `config/{env}/env.yaml`)
+4. `bundle exec rackup -s puma -p 9294` (note: different port number)
+
+> Note: technically the Renderer doesn't need the overhead of a web server (even one as low-level and lightweight as Rack) so the `bundle` command could well execute a Ruby script directly to instantiate the polling of the AWS SQS queue (TODO: fix that)
 
 ### Broker
 
