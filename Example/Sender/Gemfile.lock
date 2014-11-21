@@ -4,9 +4,9 @@ GEM
     alephant-harness (0.2.0)
       aws-sdk
     archive-tar-minitar (0.5.2)
-    aws-sdk (1.58.0)
-      aws-sdk-v1 (= 1.58.0)
-    aws-sdk-v1 (1.58.0)
+    aws-sdk (1.59.0)
+      aws-sdk-v1 (= 1.59.0)
+    aws-sdk-v1 (1.59.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
     coderay (1.1.0)
@@ -31,9 +31,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (2.9.2)
-      rack (>= 1.1, < 2.0)
-    rack (1.5.2)
     slop (3.6.0)
     spurious (0.3.0)
       docker
@@ -61,7 +58,5 @@ DEPENDENCIES
   aws-sdk
   dotenv
   pry
-  puma
-  rack
   spurious
   spurious-ruby-awssdk-helper

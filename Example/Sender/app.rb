@@ -1,17 +1,11 @@
+$: << "."
+
+require "env"
+
 class App
-  def self.call(env)
-    message_generator
-
-    [200, {"Content-Type" => "text/plain"}, ["OK"]]
-  rescue => exception
-    [500, {"Content-Type" => "text/plain"}, ["#{exception.backtrace}"]]
-  end
-
-  private
-
   def self.message_generator
     configure_queue
-    send_message
+    loop { send_message }
   end
 
   def self.configure_queue
@@ -37,3 +31,5 @@ class App
     @@sqs ||= AWS::SQS.new
   end
 end
+
+App.message_generator

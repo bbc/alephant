@@ -34,22 +34,26 @@ You'll need to start each application in the order they appear below. So start t
 
 Note: if Boot2Docker or Spurious are already running then you can skip the following steps that demonstrates how to run them
 
-### Sender
+### Spurious
 
-> Note: the Sender application doesn't need to be a Rack app (TODO: fix that)
+Spurious allows us to develop against locally running versions of specific AWS resources (such as S3, DynamoDB and SQS).
+
+Spurious is built using [Docker](https://www.docker.com/) and so it requires Docker to be running. If you're running this code on a Mac then you'll need to use [Boot2Docker](http://boot2docker.io/) (a lightweight Linux VM) so please make sure you have both these dependencies installed first.
+
+1. `boot2docker init`
+2. `boot2docker up` (check status: `boot2docker status` and `docker ps -a`)
+3. `spurious-server start` (check status: `spurious-server status`)
+4. `spurious init`
+5. `spurious up` (check status: `spurious ports`)
+
+> Note: once Boot2Docker and Spurious are running, the following applications (Sender, Renderer and Broker) will all be able to utilise the single running instance of Spurious.
+
+### Sender
 
 1. `cd Sender`
 2. `bundle install`
-3. `boot2docker init`
-4. `boot2docker up` (check status: `boot2docker status` and `docker ps -a`)
-5. `spurious-server start` (check status: `spurious-server status`)
-6. `spurious init`
-7. `spurious up` (check status: `spurious ports`)
-8. `rake harness` (sets up SQS queue based on `config/{env}/env.yaml`)
-9. `bundle exec rackup -s puma -p 9293`
-10. `curl http://0.0.0.0:9293/` (or visit `http://localhost:9293/`)
-
-> Note: now Boot2Docker and Spurious have all run, the other applications don't need them to be run.
+3. `rake harness` (sets up SQS queue based on `config/{env}/env.yaml`)
+4. `ruby app.rb`
 
 ### Renderer
 
