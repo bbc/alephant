@@ -1,15 +1,10 @@
+$: << "."
+
+require "env"
 require "mustache"
 require "crimp"
 
 class App
-  def self.call(env)
-    poll_queue
-  rescue => exception
-    [500, {"Content-Type" => "text/plain"}, ["#{exception.backtrace}"]]
-  end
-
-  private
-
   def self.poll_queue
     queue.poll do |msg|
       data = parse msg.body
@@ -38,14 +33,16 @@ class App
   end
 
   def self.s3
-    @s3 ||= AWS::S3.new
+    @@s3 ||= AWS::S3.new
   end
 
   def self.bucket
-    @bucket ||= s3.buckets[ENV["S3_BUCKET"]]
+    @@bucket ||= s3.buckets[ENV["S3_BUCKET"]]
   end
 
   def self.create_key_from(data)
     Crimp.signature data
   end
 end
+
+App.poll_queue

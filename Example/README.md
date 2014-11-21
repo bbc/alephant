@@ -72,7 +72,7 @@ The browser is a Ruby Rack application and can be run by following these steps:
 1. `cd Renderer`
 2. `bundle install`
 3. `rake harness` (sets up S3 bucket based on `config/{env}/env.yaml`)
-4. `bundle exec rackup -s puma -p 9294` (note: different port number)
+4. `ruby app.rb`
 
 > Note: technically the Renderer doesn't need the overhead of a web server (even one as low-level and lightweight as Rack) so the `bundle` command could well execute a Ruby script directly to instantiate the polling of the AWS SQS queue (TODO: fix that)
 
