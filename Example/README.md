@@ -30,11 +30,13 @@ The Broker's role is to accept requests from a client (this could be a `curl` HT
 
 ## Running each application
 
-You'll need to start each application in the order they appear below (so start Sender first, then the Renderer and finally the Broker).
+You'll need to start each application in the order they appear below. So start the Sender first and then the Renderer - once all messages have been rendered then start up the Broker (in a real world application you wouldn't have to worry about starting the Broker *after* some messages have been rendered because you would have designed the client application - which makes requests to the Broker - to handle cases where no data was available; but this is a simplified project that takes the "happy path" for the same of simplicity and understanding).
 
-If Boot2Docker and Spurious are already running then you can skip those steps.
+Note: if Boot2Docker or Spurious are already running then you can skip the following steps that demonstrates how to run them
 
 ### Sender
+
+> Note: the Sender application doesn't need to be a Rack app (TODO: fix that)
 
 1. `cd Sender`
 2. `bundle install`
@@ -43,9 +45,11 @@ If Boot2Docker and Spurious are already running then you can skip those steps.
 5. `spurious-server start` (check status: `spurious-server status`)
 6. `spurious init`
 7. `spurious up` (check status: `spurious ports`)
-8. `rake harness`
+8. `rake harness` (sets up SQS queue based on `config/{env}/env.yaml`)
 9. `bundle exec rackup -s puma -p 9293`
 10. `curl http://0.0.0.0:9293/` (or visit `http://localhost:9293/`)
+
+> Note: now Boot2Docker and Spurious have all run, the other applications don't need them to be run.
 
 ### Renderer
 
