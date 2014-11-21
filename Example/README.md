@@ -30,9 +30,9 @@ The Broker's role is to accept requests from a client (this could be a `curl` HT
 
 ## Running each application
 
-You'll need to start each application in the order they appear below. So start the Sender first and then the Renderer - once all messages have been rendered then start up the Broker (in a real world application you wouldn't have to worry about starting the Broker *after* some messages have been rendered because you would have designed the client application - which makes requests to the Broker - to handle cases where no data was available; but this is a simplified project that takes the "happy path" for the same of simplicity and understanding).
+Each application is reliant on Spurious (see below) running in the background. Other than that, there are no other cross dependencies; i.e. you can run the applications in any order. 
 
-Note: if Boot2Docker or Spurious are already running then you can skip the following steps that demonstrates how to run them
+For example, the Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send messages to the queue at random (forever). When running the Broker, it simply sits and waits for incoming requests and then tries to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 404).
 
 ### Spurious
 
@@ -73,8 +73,6 @@ The browser is a Ruby Rack application and can be run by following these steps:
 2. `bundle install`
 3. `rake harness` (sets up S3 bucket based on `config/{env}/env.yaml`)
 4. `ruby app.rb`
-
-> Note: technically the Renderer doesn't need the overhead of a web server (even one as low-level and lightweight as Rack) so the `bundle` command could well execute a Ruby script directly to instantiate the polling of the AWS SQS queue (TODO: fix that)
 
 ### Broker
 
