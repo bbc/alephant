@@ -19,7 +19,7 @@ class App
   end
 
   def self.send_message
-    time = Random.rand(60..120)
+    time = Random.rand(10..30)
     p "Going to sleep for #{time} seconds before sending a message to the queue"
     sleep time # mimic messages coming into queue at random
     queue.send_message(message)

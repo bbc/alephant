@@ -3,7 +3,6 @@ require_relative "env"
 
 task :harness do
   config = {
-    :buckets => [ENV["S3_BUCKET"]],
     :queues  => [ENV["SQS_QUEUE"]]
   }
 
