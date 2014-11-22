@@ -38,6 +38,8 @@ For example, the Renderer can be run by itself and it'll simply sit and wait for
 
 Spurious allows us to develop against locally running versions of specific AWS resources (such as S3, DynamoDB and SQS).
 
+> Note: there is a bug with the Docker-API gem that currently requires version < 1.15.0
+
 Spurious is built using [Docker](https://www.docker.com/) and so it requires Docker to be running. If you're running this code on a Mac then you'll need to use [Boot2Docker](http://boot2docker.io/) (a lightweight Linux VM) so please make sure you have both these dependencies installed first.
 
 1. `boot2docker init`

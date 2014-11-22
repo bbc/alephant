@@ -21,11 +21,11 @@ class App
   end
 
   def self.render(data)
-    Mustache.render template, data
+    Mustache.render template(data[:component]), data
   end
 
-  def self.template
-    @@template ||= IO.read "templates/test.mustache"
+  def self.template(component)
+    IO.read "templates/#{component}.mustache"
   end
 
   def self.parse(data)
@@ -41,7 +41,7 @@ class App
   end
 
   def self.create_key_from(data)
-    Crimp.signature data
+    Crimp.signature data[:component]
   end
 end
 
