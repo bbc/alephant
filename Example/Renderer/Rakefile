@@ -8,4 +8,3 @@ task :harness do
 
   Alephant::Harness::Setup.configure(config, ENV)
 end
-

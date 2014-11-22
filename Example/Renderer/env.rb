@@ -14,4 +14,3 @@ Dotenv.load(
     File.dirname(__FILE__), "config", ENV["APP_ENV"], "env.yaml"
   )
 )
-
