@@ -85,4 +85,4 @@ The browser is a Ruby Rack application and can be run by following these steps:
 3. `bundle exec rackup -s puma -p 9293`
 4. `curl http://0.0.0.0:9293/component/foo`
 
-> Note: the `curl` command will depend on what messages you sent and were renderered
+> Note: the `curl` command will depend on what messages you sent and were renderered. So in our Sender application we fire off messages which have a `component` key set to either "test", "foo" or "bar". In the above `curl` example I'm requesting the foo component
