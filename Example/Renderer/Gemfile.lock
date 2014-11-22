@@ -13,7 +13,7 @@ GEM
     crimp (0.0.1)
     daemons (1.1.9)
     docker (0.0.1)
-    docker-api (1.15.0)
+    docker-api (1.13.6)
       archive-tar-minitar
       excon (>= 0.38.0)
       json
