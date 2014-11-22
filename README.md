@@ -4,11 +4,11 @@ The Alephant framework is a collection of isolated Ruby gems, which interconnect
 
 Alephant is being utilised by many different BBC teams and as the underlying framework for many different BBC based projects.
 
-## TODO
+## Example application
 
-Provide a simple example application so users can get up and running with the Alephant framework much more quickly and easily; as well as providing architectural diagrams and details for each individual Alephant gem.
+To help new users get up and running with the Alephant framework more quickly and easily, we've provided an example application that mimics a similar pattern used within the BBC for different projects. 
 
-We will also aim to include information regarding the architectural pattern the Alephant framework is based upon.
+View the contents of the `Example` folder and follow the instructions in its README.
 
 ## Supported Rubies
 
