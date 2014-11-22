@@ -1,48 +1,49 @@
-$: << "."
+require "alephant/publisher/queue"
+require "alephant/renderer/views/html"
+require "alephant/renderer/views/json"
+require "alephant/logger"
+require_relative "env"
 
-require "env"
-require "mustache"
-require "crimp"
+module App
+  include Alephant::Logger
 
-class App
-  def self.poll_queue
-    queue.poll do |msg|
-      data = parse msg.body
-      bucket.objects[create_key_from data].write(render data)
+  def self.run!
+    loop do
+      begin
+        Alephant::Publisher::Queue.create(options).run!
+      rescue Exception => e
+        logger.warn "Error: #{e.message}\n#{e.backtrace.join("\n")}"
+      end
     end
   end
 
-  def self.queue
-    @@queue ||= sqs.queues.named(ENV["SQS_QUEUE"])
+  private
+
+  def self.app_config
+    BBC::Cosmos::Config.app
   end
 
-  def self.sqs
-    @@sqs ||= AWS::SQS.new
+  def self.component_base_path
+    File.join(File.dirname(__FILE__), "components")
   end
 
-  def self.render(data)
-    Mustache.render template(data[:component]), data
-  end
+  def self.options
+    Alephant::Publisher::Queue::Options.new.tap do |opts|
+      opts.add_queue(
+        :sqs_queue_name       => ENV["SQS_QUEUE_NAME"]
+      )
 
-  def self.template(component)
-    IO.read "templates/#{component}.mustache"
-  end
-
-  def self.parse(data)
-    JSON.parse data, :symbolize_names => true
-  end
-
-  def self.s3
-    @@s3 ||= AWS::S3.new
-  end
-
-  def self.bucket
-    @@bucket ||= s3.buckets[ENV["S3_BUCKET"]]
-  end
-
-  def self.create_key_from(data)
-    Crimp.signature data[:component]
+      opts.add_writer(
+        :sequencer_table_name => ENV['SEQUENCER_TABLE_NAME'],
+        :lookup_table_name    => ENV['LOOKUP_TABLE_NAME'],
+        :sequence_id_path     => ENV["SEQUENCE_ID_PATH"],
+        :renderer_id          => ENV["RENDERER_ID"],
+        :s3_bucket_id         => ENV["S3_BUCKET_ID"],
+        :s3_object_path       => ENV["S3_OBJECT_PATH"],
+        :view_path            => component_base_path
+      )
+    end
   end
 end
 
-App.poll_queue
+App.run!

@@ -1,48 +1,66 @@
 $: << "."
 
 require "env"
+require "json"
+require "alephant/logger"
 
-class App
-  def self.message_generator
-    set_components
-    configure_queue
-    loop { send_message }
+class Sender
+  include Alephant::Logger
+
+  def initialize(sequence = 1)
+    @sequence = sequence
+    logger.info "Starting sequence: #{@sequence}"
   end
 
-  def self.set_components
-    @@components = ["test", "foo", "bar"]
+  def generate_messages!
+    loop do
+      logger.info "Sending message sequence: #{@sequence}"
+      delay
+      send message
+      increment_sequence
+    end
+    p 'Loop broken'
   end
 
-  def self.configure_queue
-    queue.visibility_timeout = 120
+  private
+
+  def increment_sequence
+    @sequence += 1
   end
 
-  def self.send_message
-    time = Random.rand(10..30)
-    p "Going to sleep for #{time} seconds before sending a message to the queue"
-    sleep time # mimic messages coming into queue at random
-    queue.send_message(message) unless @@components.empty?
+  def message
+    {
+      :sequence  => @sequence,
+      :title     => 'Test Message',
+      :timestamp => Time.now.utc
+    }.to_json
   end
 
-  def self.message
-    { :component => component, :title => "My Title", :timestamp => Time.now.utc }.to_json
+  def queue
+    @queue ||= sqs.queues.named(ENV['SQS_QUEUE_NAME']).tap do |q|
+      q.visibility_timeout = 120
+    end
   end
 
-  def self.component
-    @@components.shift
-
-    # we wouldn't do this in a real application
-    # this code just makes it easier for us to
-    # render (theorectically) different templates
+  def random
+    Random.rand(1..5)
   end
 
-  def self.queue
-    @@queue ||= sqs.queues.named(ENV["SQS_QUEUE"])
+  def send(msg)
+    queue.send_message msg
+    logger.info 'Message sent'
   end
 
-  def self.sqs
-    @@sqs ||= AWS::SQS.new
+  def delay
+    random.tap do |time|
+      logger.info "Going to sleep for #{time}s before sending a message to the queue"
+      sleep time
+    end
+  end
+
+  def sqs
+    @sqs ||= AWS::SQS.new
   end
 end
 
-App.message_generator
+Sender.new.generate_messages!

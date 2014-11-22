@@ -2,8 +2,15 @@ require "alephant/harness/setup"
 require_relative "env"
 
 task :harness do
+
   config = {
-    :buckets => [ENV["S3_BUCKET"]]
+    :tables   => [
+      { :name => ENV['LOOKUP_TABLE_NAME'], :schema    => "lookup" },
+      { :name => ENV['SEQUENCER_TABLE_NAME'], :schema => "sequencer" }
+    ],
+    :queues   => [
+      ENV['SQS_QUEUE_NAME']
+    ]
   }
 
   Alephant::Harness::Setup.configure(config, ENV)

@@ -1,7 +1,8 @@
 require "aws-sdk"
 require "dotenv"
 
-ENV["APP_ENV"] = ENV.fetch("APP_ENV", "development")
+ENV["APP_ENV"]      = ENV.fetch("APP_ENV", "development")
+ENV["DEV_APP_CONF"] = File.join(File.dirname(__FILE__), 'config', 'development', 'app.json')
 
 if ENV["APP_ENV"] == "development"
   require "pry"

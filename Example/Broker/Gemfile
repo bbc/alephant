@@ -5,7 +5,7 @@ group :production do
   gem "puma"
   gem "aws-sdk"
   gem "dotenv"
-  gem "crimp"
+  gem "alephant-broker"
 end
 
 group :development do
