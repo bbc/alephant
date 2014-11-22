@@ -34,6 +34,8 @@ Each application is reliant on Spurious (see below) running in the background. O
 
 For example, the Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send messages to the queue at random (forever). When running the Broker, it simply sits and waits for incoming requests and then tries to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 404).
 
+> Note: one exception to this relates to the Broker being able to access the Spurious AWS S3 bucket. If we don't run the Renderer first then the S3 set-up wont have happened and so the code might error whilst running the broker (e.g. it'll try to access an S3 account that doesn't exist yet in Spurious)
+
 ### Spurious
 
 Spurious allows us to develop against locally running versions of specific AWS resources (such as S3, DynamoDB and SQS).
@@ -78,4 +80,9 @@ The browser is a Ruby Rack application and can be run by following these steps:
 
 ### Broker
 
-...
+1. `cd Broker`
+2. `bundle install`
+3. `bundle exec rackup -s puma -p 9293`
+4. `curl http://0.0.0.0:9293/component/foo`
+
+> Note: the `curl` command will depend on what messages you sent and were renderered
