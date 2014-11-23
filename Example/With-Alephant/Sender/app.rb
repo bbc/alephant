@@ -10,6 +10,7 @@ class App
   end
 
   def self.set_components
+    @@counter    = 0
     @@components = ["test", "foo", "bar"]
   end
 
@@ -26,7 +27,11 @@ class App
   end
 
   def self.message
-    { :component => component, :title => "My Title", :timestamp => Time.now.utc }.to_json
+    { :sequence => counter, :component => component, :title => "My Title", :timestamp => Time.now.utc }.to_json
+  end
+
+  def self.counter
+    @@counter += 1 # used by the Renderer to help keep messages stored sequentially
   end
 
   def self.component
