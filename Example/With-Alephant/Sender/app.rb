@@ -22,6 +22,7 @@ class App
     p "Going to sleep for #{time} seconds before sending a message to the queue"
     sleep time # mimic messages coming into queue at random
     queue.send_message(message) unless @@components.empty?
+    p "Message sent"
   end
 
   def self.message
