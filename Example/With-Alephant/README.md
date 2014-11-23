@@ -37,11 +37,13 @@ The Broker's role is to accept requests from a client (this could be a `curl` HT
 
 ## Running each application
 
-Each application is reliant on Spurious (see below) running in the background. Other than that, there are no other cross dependencies; i.e. you can run the applications in any order. 
+Each application is reliant on Spurious (see below) running in the background.
 
-For example, the Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send pre-defined messages to the queue. When running the Broker, it simply sits and waits for incoming requests and then tries to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 500 along with a stack trace error).
+Otherwise, the Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send pre-defined messages to the queue. 
 
-> Note: one exception to this relates to the Broker being able to access the Spurious AWS S3 bucket. If we don't run the Renderer first then the S3 set-up wont have happened and so the code might error whilst running the broker (e.g. it'll try to access an S3 account that doesn't exist yet in Spurious)
+When running the Broker, it simply sits and waits for incoming requests and then tries to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 500 along with a stack trace error).
+
+> Note: the Broker wont be able to access the Spurious AWS resources (e.g. S3 bucket, DynamoDB tables) unless we run the Renderer first. This is because the S3 set-up of those resources (i.e. `rake harness`) wont have happened and so the code might error whilst running the broker (e.g. it'll try to access a resource that doesn't exist yet in Spurious)
 
 ### Spurious
 
