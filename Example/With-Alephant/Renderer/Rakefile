@@ -3,7 +3,13 @@ require_relative "env"
 
 task :harness do
   config = {
-    :buckets => [ENV["S3_BUCKET"]]
+    :buckets  => [ENV["S3_BUCKET"]],
+    :tables   => [
+      # Schema files are currently baked into Alephant-Harness gem
+      # Future release will allow custom schemas to be provided
+      { :name => ENV["DYNAMO_LU"], :schema => "lookup" },
+      { :name => ENV["DYNAMO_SQ"], :schema => "sequencer" }
+    ]
   }
 
   Alephant::Harness::Setup.configure(config, ENV)

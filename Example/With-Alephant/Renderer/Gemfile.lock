@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    alephant-cache (1.1.1)
+      alephant-logger
+      aws-sdk (~> 1.0)
     alephant-harness (0.2.0)
       aws-sdk
     alephant-logger (0.0.2)
@@ -63,6 +66,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  alephant-cache
   alephant-harness
   alephant-renderer
   aws-sdk

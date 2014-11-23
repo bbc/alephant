@@ -4,6 +4,7 @@ group :production do
   gem "aws-sdk"
   gem "dotenv"
   gem "alephant-renderer"
+  gem "alephant-cache"
 end
 
 group :development do
