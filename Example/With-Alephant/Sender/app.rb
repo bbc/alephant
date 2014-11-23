@@ -3,14 +3,23 @@ $: << "."
 require "env"
 
 class App
-  def self.message_generator
+  def self.message_generator(initial_counter_value = 1)
+    @@counter = initial_counter_value
+    p "Counter is now: #{@@counter}"
+
     set_components
     configure_queue
-    loop { send_message }
+
+    loop do
+      send_message
+      break if @@components.empty?
+    end
+
+    p "loop broken"
+    message_generator(@@counter + 1)
   end
 
   def self.set_components
-    @@counter    = 0
     @@components = ["test", "foo", "bar"]
   end
 
@@ -20,18 +29,18 @@ class App
 
   def self.send_message
     time = Random.rand(1..5)
+
     p "Going to sleep for #{time} seconds before sending a message to the queue"
+
     sleep time # mimic messages coming into queue at random
     queue.send_message(message) unless @@components.empty?
+
     p "Message sent"
+    p "-------------"
   end
 
   def self.message
-    { :sequence => counter, :component => component, :title => "My Title", :timestamp => Time.now.utc }.to_json
-  end
-
-  def self.counter
-    @@counter += 1 # used by the Renderer to help keep messages stored sequentially
+    { :sequence => @@counter, :component => component, :title => "My Title", :timestamp => Time.now.utc }.to_json
   end
 
   def self.component
