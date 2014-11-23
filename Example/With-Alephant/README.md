@@ -24,6 +24,13 @@ The Sender's role is to send JSON data as a message (at random) to an AWS SQS qu
 
 The Renderer's role is to poll the same AWS SQS queue as the Sender is using, and to retrieve any messages found, render their JSON into a HTML template and to store the rendered HTML into an AWS S3 bucket.
 
+The Renderer application utilises the following Alephant gems:
+
+- [alephant-renderer](https://github.com/BBC-News/alephant-renderer)
+- [alephant-cache](https://github.com/BBC-News/alephant-cache)
+- [alephant-lookup](https://github.com/BBC-News/alephant-lookup)
+- [alephant-sequencer](https://github.com/BBC-News/alephant-sequencer)
+
 ### Broker
 
 The Broker's role is to accept requests from a client (this could be a `curl` HTTP request or from a web browser) and to negotiate which content from inside the AWS S3 bucket should be returned.
