@@ -5,6 +5,8 @@ group :production do
   gem "dotenv"
   gem "alephant-renderer"
   gem "alephant-cache"
+  gem "alephant-lookup"
+  gem "alephant-sequencer"
 end
 
 group :development do
