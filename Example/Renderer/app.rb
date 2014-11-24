@@ -43,3 +43,5 @@ module App
     end
   end
 end
+
+App.run!
