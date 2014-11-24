@@ -1,0 +1,23 @@
+require "alephant/harness/setup"
+require "bbc/cosmos/config"
+require_relative "env"
+
+task :harness do
+  app_config = BBC::Cosmos::Config.app
+
+  config = {
+    :tables   => [
+      # Schema files are currently baked into the Alephant-Harness gem.
+      # If you have custom schemas that don't fit the baked in schemas,
+      # then you can inject their content dynamically, like so:
+      # :schema > YAML::load_file("path/to/schema.yaml)
+      { :name => app_config[:lookup_table_name], :schema    => "lookup" },
+      { :name => app_config[:sequencer_table_name], :schema => "sequencer" }
+    ],
+    :queues   => [
+      app_config[:sqs_queue_name]
+    ]
+  }
+
+  Alephant::Harness::Setup.configure(config, ENV)
+end

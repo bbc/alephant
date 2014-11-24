@@ -1,0 +1,15 @@
+source "https://rubygems.org/"
+
+group :production do
+  gem "aws-sdk"
+  gem "dotenv"
+  gem "alephant-publisher-queue"
+  gem "bbc-cosmos-config"
+end
+
+group :development do
+  gem "spurious"
+  gem "spurious-ruby-awssdk-helper"
+  gem "alephant-harness"
+  gem "pry"
+end
