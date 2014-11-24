@@ -39,7 +39,7 @@ class App
   end
 
   def self.queue
-    @@queue ||= sqs.queues.named(ENV["SQS_QUEUE"])
+    @@queue ||= sqs.queues.named(ENV["SQS_QUEUE_NAME"])
   end
 
   def self.sqs

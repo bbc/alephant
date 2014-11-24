@@ -17,16 +17,16 @@ module App
   def self.options
     Alephant::Publisher::Queue::Options.new.tap do |opts|
       opts.add_queue(
-        :sqs_queue_name => "election-data-renderer"
+        :sqs_queue_name       => ENV["SQS_QUEUE_NAME"]
       )
 
       opts.add_writer(
-        :sequencer_table_name => "development_sequencer",
-        :lookup_table_name    => "development_lookup",
-        :sequence_id_path     => "$.sequence",
-        :renderer_id          => "test",
-        :s3_bucket_id         => "election-data-shared",
-        :s3_object_path       => "election-data-shared/development/html",
+        :sequencer_table_name => ENV["SEQUENCER_TABLE_NAME"],
+        :lookup_table_name    => ENV["LOOKUP_TABLE_NAME"],
+        :sequence_id_path     => ENV["SEQUENCE_ID_PATH"],
+        :renderer_id          => ENV["RENDERER_ID"],
+        :s3_bucket_id         => ENV["S3_BUCKET_ID"],
+        :s3_object_path       => ENV["S3_OBJECT_PATH"],
         :view_path            => component_base_path
       )
     end
