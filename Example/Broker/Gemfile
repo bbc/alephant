@@ -5,7 +5,7 @@ group :production do
   gem "puma"
   gem "aws-sdk"
   gem "dotenv"
-  gem "alephant-broker", :path => '/Users/jacks83/Projects/alephant-broker'
+  gem "alephant-broker"
 end
 
 group :development do
