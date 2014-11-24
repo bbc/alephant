@@ -4,7 +4,6 @@ group :production do
   gem "aws-sdk"
   gem "dotenv"
   gem "alephant-publisher-queue"
-  gem "bbc-cosmos-config"
 end
 
 group :development do

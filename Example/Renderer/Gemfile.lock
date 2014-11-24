@@ -40,14 +40,11 @@ GEM
     aws-sdk-v1 (1.59.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
-    bbc-cosmos-config (0.3.3)
-      aws-sdk (~> 1.0)
-      hashie
     coderay (1.1.0)
     crimp (0.0.1)
     daemons (1.1.9)
     docker (0.0.1)
-    docker-api (1.13.6)
+    docker-api (1.15.0)
       archive-tar-minitar
       excon (>= 0.38.0)
       json
@@ -99,7 +96,6 @@ DEPENDENCIES
   alephant-harness
   alephant-publisher-queue
   aws-sdk
-  bbc-cosmos-config
   dotenv
   pry
   spurious
