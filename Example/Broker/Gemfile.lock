@@ -1,7 +1,7 @@
-PATH
-  remote: /Users/jacks83/Projects/alephant-broker
+GEM
+  remote: https://rubygems.org/
   specs:
-    alephant-broker (3.0.0)
+    alephant-broker (3.0.1)
       alephant-cache
       alephant-logger
       alephant-lookup
@@ -10,10 +10,6 @@ PATH
       dalli-elasticache
       faraday
       pmap
-
-GEM
-  remote: https://rubygems.org/
-  specs:
     alephant-cache (1.1.1)
       alephant-logger
       aws-sdk (~> 1.0)
@@ -45,7 +41,7 @@ GEM
     dalli-elasticache (0.1.2)
       dalli (>= 1.0.0)
     docker (0.0.1)
-    docker-api (1.13.6)
+    docker-api (1.15.0)
       archive-tar-minitar
       excon (>= 0.38.0)
       json
@@ -71,7 +67,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (2.9.2)
+    puma (2.10.0)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
     slop (3.6.0)
@@ -97,7 +93,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  alephant-broker!
+  alephant-broker
   alephant-harness
   aws-sdk
   dotenv
