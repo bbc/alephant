@@ -5,8 +5,10 @@ task :harness do
   config = {
     :buckets  => [ENV["S3_BUCKET"]],
     :tables   => [
-      # Schema files are currently baked into Alephant-Harness gem
-      # Future release will allow custom schemas to be provided
+      # Schema files are currently baked into the Alephant-Harness gem.
+      # If you have custom schemas that don't fit the baked in schemas,
+      # then you can inject their content dynamically, like so:
+      # :schema => YAML::load_file("path/to/schema.yaml)
       { :name => ENV["DYNAMO_LU"], :schema => "lookup" },
       { :name => ENV["DYNAMO_SQ"], :schema => "sequencer" }
     ]
