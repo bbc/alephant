@@ -2,6 +2,7 @@ require "alephant/publisher/queue"
 require "alephant/renderer/views/html"
 require "alephant/renderer/views/json"
 require "alephant/logger"
+require_relative "env"
 
 module App
 
