@@ -39,11 +39,11 @@ The Broker's role is to accept requests from a client (this could be a `curl` HT
 
 Each application is reliant on Spurious (see below) running in the background.
 
-Otherwise, the Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send pre-defined messages to the queue. 
+The Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send pre-defined messages to the queue. 
 
-When running the Broker, it simply sits and waits for incoming requests and then tries to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 500 along with a stack trace error).
+When running the Broker, it will simply sit and wait for incoming requests and then try to retrieve the relevant content from S3 (if it doesn't exist - i.e. you haven't sent any messages and so nothing has been rendered - then the Broker will return a 500 along with a stack trace error).
 
-> Note: the Broker wont be able to access the Spurious AWS resources (e.g. S3 bucket, DynamoDB tables) unless we run the Renderer first. This is because the S3 set-up of those resources (i.e. `rake harness`) wont have happened and so the code might error whilst running the broker (e.g. it'll try to access a resource that doesn't exist yet in Spurious)
+> Note: the Broker wont be able to run properly if you run it before any other application. This is because it can't access the Spurious AWS resources (e.g. S3 bucket, DynamoDB tables) unless we run the Renderer first. This is because the S3 set-up of those resources (i.e. `rake harness`) wont have happened and so the code might error whilst running the broker (e.g. it'll try to access a resource that doesn't exist yet in Spurious)
 
 ### Spurious
 
@@ -77,14 +77,14 @@ The browser is a Ruby Rack application and can be run by following these steps:
 
 1. `cd Sender`
 2. `bundle install`
-3. `rake harness` (sets up SQS queue based on `config/{env}/env.yaml`)
+3. `rake harness` (sets up SQS queue defined in `config/{env}/env.yaml`)
 4. `ruby app.rb`
 
 ### Renderer
 
 1. `cd Renderer`
 2. `bundle install`
-3. `rake harness` (sets up S3 bucket based on `config/{env}/env.yaml`)
+3. `rake harness` (sets up AWS resources defined in `config/{env}/env.yaml`)
 4. `ruby app.rb`
 
 ### Broker
