@@ -91,6 +91,22 @@ and remove the development credentials from `config/development/env.yaml`. You c
 $: AWS_ACCESS_KEY_ID=XYZ AWS_REGION=eu-west-1 AWS_SECRET_ACCESS_KEY=ABC ruby app.rb
 ```
 
+### Harness
+
+The `alephant-harness` gem allows you to create the resources needed by the framework, and as default has the schema for the lookup and sequencer table baked in.
+
+If you would like to specify your own schema data you can do the following:
+
+```ruby
+config = {
+  :tables => [
+    {
+	  :name => 'my_table', :schema > YAML::load_file("path/to/schema.yaml")
+    }
+  ]
+}
+```
+
 ### Sender
 
 1. `cd Sender`

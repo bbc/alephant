@@ -5,10 +5,6 @@ task :harness do
 
   config = {
     :tables   => [
-      # Schema files are currently baked into the Alephant-Harness gem.
-      # If you have custom schemas that don't fit the baked in schemas,
-      # then you can inject their content dynamically, like so:
-      # :schema > YAML::load_file("path/to/schema.yaml)
       { :name => ENV['LOOKUP_TABLE_NAME'], :schema    => "lookup" },
       { :name => ENV['SEQUENCER_TABLE_NAME'], :schema => "sequencer" }
     ],
