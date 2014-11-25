@@ -3,7 +3,7 @@ require_relative "env"
 
 task :harness do
   config = {
-    :queues  => [ENV["SQS_QUEUE"]]
+    :queues  => [ENV["SQS_QUEUE_NAME"]]
   }
 
   Alephant::Harness::Setup.configure(config, ENV)
