@@ -37,7 +37,7 @@ The Broker's role is to accept requests from a client (this could be a `curl` HT
 
 ## Running each application
 
-Each application is reliant on Spurious (see below) running in the background.
+Each application is set-up to use Spurious (see [below](#spurious)), but this isn't required (see [Standard AWS Account](#standard-aws-account)).
 
 The Renderer can be run by itself and it'll simply sit and wait for messages to appear on the queue before doing anything. Similarly, if you run the Sender by itself it'll simply send pre-defined messages to the queue. 
 
@@ -101,7 +101,7 @@ If you would like to specify your own schema data you can do the following:
 config = {
   :tables => [
     {
-	  :name => 'my_table', :schema > YAML::load_file("path/to/schema.yaml")
+	  :name => 'my_table', :schema => YAML::load_file("path/to/schema.yaml")
     }
   ]
 }
