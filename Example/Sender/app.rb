@@ -1,50 +1,66 @@
 $: << "."
 
 require "env"
+require "json"
+require "alephant/logger"
 
-class App
-  def self.message_generator(initial_counter_value = 1663)
-    @@counter = initial_counter_value
-    p "Counter is now: #{@@counter}"
+class Sender
+  include Alephant::Logger
 
-    configure_queue
+  def initialize(sequence = 1)
+    @sequence = sequence
+    logger.info "Starting sequence: #{@sequence}"
+  end
 
+  def generate_messages!
     loop do
-      send_message
+      logger.info "Sending message sequence: #{@sequence}"
+      delay
+      send message
+      increment_sequence
     end
-
-    p "loop broken"
+    p 'Loop broken'
   end
 
-  def self.configure_queue
-    queue.visibility_timeout = 120
+  private
+
+  def increment_sequence
+    @sequence += 1
   end
 
-  def self.send_message
-    time = Random.rand(1..5)
-
-    p "Going to sleep for #{time} seconds before sending a message to the queue"
-
-    sleep time # mimic messages coming into queue at random
-    queue.send_message(message)
-
-    p "Message sent"
-    p "-------------"
+  def message
+    {
+      :sequence  => @sequence,
+      :title     => 'Test Message',
+      :timestamp => Time.now.utc
+    }.to_json
   end
 
-  def self.message
-    @@counter = @@counter + 1
-    p "Sending message sequence: #{@@counter}"
-    { :sequence => @@counter, :title => "My Title", :timestamp => Time.now.utc }.to_json
+  def queue
+    @queue ||= sqs.queues.named(ENV['SQS_QUEUE_NAME']).tap do |q|
+      q.visibility_timeout = 120
+    end
   end
 
-  def self.queue
-    @@queue ||= sqs.queues.named(ENV["SQS_QUEUE_NAME"])
+  def random
+    Random.rand(1..5)
   end
 
-  def self.sqs
-    @@sqs ||= AWS::SQS.new
+  def send(msg)
+    queue.send_message msg
+    logger.info 'Message sent'
+  end
+
+  def delay
+    random.tap do |time|
+      logger.info "Going to sleep for #{time}s before sending a message to the queue"
+      sleep time
+    end
+  end
+
+  def sqs
+    @sqs ||= AWS::SQS.new
   end
 end
 
-App.message_generator
+Sender.new.generate_messages!
