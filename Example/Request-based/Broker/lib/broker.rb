@@ -4,7 +4,7 @@ require_relative 'dynamic_url_locator'
 
 module Broker
   def self.create
-    Alephant::Broker::Application.new load_strategy
+    Alephant::Broker::Application.new(load_strategy, config)
   end
 
   private
