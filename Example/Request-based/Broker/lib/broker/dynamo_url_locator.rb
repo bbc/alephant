@@ -9,10 +9,7 @@ module Broker
     end
 
     def generate(component, options)
-      dynamo.query options(
-        component.id,
-        Crimp.signature(options)
-      )
+      location_from query(component, options)
     end
 
     private
@@ -21,6 +18,18 @@ module Broker
 
     def dynamo_table_name
       config[:dynamo_table_name]
+    end
+
+    def location_from(results)
+      results[:count] == 1 ? results[:member].first['location'][:s]
+                           : nil
+    end
+
+    def query(component, options)
+      dynamo.query options(
+        component.id,
+        Crimp.signature(options)
+      )
     end
 
     def query_options(component_id, opts_hash)
