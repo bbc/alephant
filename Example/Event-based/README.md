@@ -1,4 +1,4 @@
-## Alephant example application
+## Event-Based Alephant Example Application
 
 This example is made up of three separate applications:
 
