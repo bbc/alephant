@@ -96,6 +96,7 @@ DEPENDENCIES
   alephant-broker
   alephant-harness
   aws-sdk
+  crimp
   dotenv
   pry
   puma
