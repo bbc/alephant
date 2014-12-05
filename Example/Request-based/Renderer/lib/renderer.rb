@@ -1,4 +1,7 @@
 require 'alephant/publisher/request'
+require 'alephant/publisher/request/data_mapper_factory'
+require 'alephant/publisher/request/processor'
+require 'faraday'
 
 module Renderer
   def self.create
