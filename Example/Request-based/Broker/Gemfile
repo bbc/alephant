@@ -1,17 +1,17 @@
-source 'https://rubygems.org/'
+source "https://rubygems.org/"
 
 group :production do
-  gem 'rack'
-  gem 'puma'
-  gem 'aws-sdk'
-  gem 'dotenv'
-  gem 'alephant-broker'
-  gem 'crimp'
+  gem "rack"
+  gem "puma"
+  gem "aws-sdk"
+  gem "dotenv"
+  gem "alephant-broker"
+  gem "crimp"
 end
 
 group :development do
-  gem 'spurious'
-  gem 'spurious-ruby-awssdk-helper'
-  gem 'alephant-harness'
-  gem 'pry'
+  gem "spurious"
+  gem "spurious-ruby-awssdk-helper"
+  gem "alephant-harness"
+  gem "pry"
 end
