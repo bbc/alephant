@@ -26,7 +26,7 @@ module Broker
     end
 
     def query(component, options)
-      dynamo.query options(
+      dynamo.query query_options(
         component.id,
         Crimp.signature(options)
       )
