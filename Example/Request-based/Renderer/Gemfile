@@ -1,0 +1,10 @@
+source "https://rubygems.org/"
+
+group :production do
+  gem "alephant-publisher-request", "~> 0.1.1"
+  gem "faraday"
+end
+
+group :development do
+  gem "pry"
+end
