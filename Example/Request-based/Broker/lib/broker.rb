@@ -1,6 +1,6 @@
 require 'alephant/broker'
 require 'alephant/broker/load_strategy/http'
-require_relative 'dynamic_url_locator'
+require_relative 'broker/dynamic_url_locator'
 
 module Broker
   def self.create

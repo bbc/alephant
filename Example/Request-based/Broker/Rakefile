@@ -1,0 +1,17 @@
+$: << File.dirname(__FILE__)
+
+require 'alephant/harness/setup'
+require 'env'
+require 'yaml'
+
+task :harness do
+  config = {
+    :tables => [
+      {
+        :name   => ENV['DYNAMO_TABLE_NAME'],
+        :schema => YAML.load_file(File.join('config', 'schema', 'renderer_locations.yaml'))
+      }
+    ]
+  }
+  Alephant::Harness::Setup.configure(config, ENV)
+end
