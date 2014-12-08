@@ -1,5 +1,6 @@
-require 'crimp'
 require 'alephant/broker/load_strategy/http'
+require 'crimp'
+require 'rack'
 
 module Broker
   class DynamicUrlLocator < Alephant::Broker::LoadStrategy::HTTP::URL
@@ -8,8 +9,8 @@ module Broker
       @dynamo = AWS::DynamoDB::Client::V20120810.new
     end
 
-    def generate(component_id, options)
-      "#{location_from query(options)}/component/#{component_id}"
+    def generate(comp_id, opts)
+      "#{location_from query(opts)}/component/#{comp_id}?#{parameterize opts}"
     end
 
     private
@@ -18,12 +19,6 @@ module Broker
 
     def dynamo_table_name
       config[:dynamo_table_name]
-    end
-
-    def routing_from(options)
-      Crimp.signature(
-        options[:routing] || {}
-      )
     end
 
     def location_from(results)
@@ -53,6 +48,20 @@ module Broker
         :limit => 1,
         :table_name => dynamo_table_name
       }
+    end
+
+    def parameterize(options)
+      Rack::Utils.build_query remove_routing(options)
+    end
+
+    def remove_routing(hash)
+      hash.reject { |k| k == :routing }
+    end
+
+    def routing_from(options)
+      Crimp.signature(
+        options[:routing] || {}
+      )
     end
 
     class NotFound < Exception; end
