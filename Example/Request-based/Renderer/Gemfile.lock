@@ -1,8 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    alephant-logger (0.0.2)
-    alephant-publisher-request (0.0.3)
+    alephant-logger (0.2.0)
+      aws-sdk
+    alephant-publisher-request (0.1.1)
       alephant-logger
       alephant-renderer
       aws-sdk (~> 1.0)
@@ -10,7 +11,7 @@ GEM
       mustache (>= 0.99.5)
       rack
       rake
-    alephant-renderer (0.1.0)
+    alephant-renderer (0.2.0)
       alephant-logger
       hashie
       i18n
@@ -44,6 +45,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  alephant-publisher-request
+  alephant-publisher-request (~> 0.1.1)
   faraday
   pry
