@@ -1,8 +1,5 @@
 :attribute_definitions:
   -
-    :attribute_name: 'component_id'
-    :attribute_type: 'S'
-  -
     :attribute_name: 'opts_hash'
     :attribute_type: 'S'
 
@@ -10,11 +7,8 @@
 
 :key_schema:
   -
-    :attribute_name: 'component_id'
-    :key_type: 'HASH'
-  -
     :attribute_name: 'opts_hash'
-    :key_type: 'RANGE'
+    :key_type: 'HASH'
 
 :provisioned_throughput:
   :read_capacity_units: 10
