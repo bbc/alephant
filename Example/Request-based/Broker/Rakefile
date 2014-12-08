@@ -18,9 +18,6 @@ task :harness do
   AWS::DynamoDB::Client::V20120810.new.put_item({
     :table_name => ENV['DYNAMO_TABLE_NAME'],
     :item => {
-      'component_id' => {
-        'S' => 'test_component'
-      },
       'opts_hash' => {
         'S' => '7e0c33c476b1089500d5f172102ec03e'
       },
