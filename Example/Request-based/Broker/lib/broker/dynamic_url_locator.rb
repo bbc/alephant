@@ -5,11 +5,11 @@ module Broker
   class DynamicUrlLocator < Alephant::Broker::LoadStrategy::HTTP::URL
     def initialize(config)
       @config = config
-      @dynamo = AWS::DynamoDB::Client.new
+      @dynamo = AWS::DynamoDB::Client::V20120810.new
     end
 
-    def generate(component, options)
-      location_from query(component, options)
+    def generate(component_id, options)
+      location_from query(component_id, options)
     end
 
     private
@@ -22,12 +22,12 @@ module Broker
 
     def location_from(results)
       results[:count] == 1 ? results[:member].first['location'][:s]
-                           : nil
+                           : 'http://google.com'
     end
 
-    def query(component, options)
+    def query(component_id, options)
       dynamo.query query_options(
-        component.id,
+        component_id,
         Crimp.signature(options)
       )
     end
@@ -37,7 +37,7 @@ module Broker
         :attributes_to_get => [
           'location'
         ],
-        :range_key_condition => {
+        :key_conditions => {
           'component_id' => {
             :attribute_value_list => [
               { 's' => opts_hash }
