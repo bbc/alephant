@@ -26,7 +26,7 @@ Hash of Routing Params:
 
 ### Renderer
 
-Upon receiving a request the Renderer will poll a pre-specified endpoint (depending on requested component) and render a HTML template using the returned JSON, and then return the rendered HTML to the Broker.
+Upon receiving a request the Renderer will hit a pre-specified endpoint (depending on requested component) and render a HTML template using the returned JSON, and then return the rendered HTML to the Broker.
 
 ## Setup
 
