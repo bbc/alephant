@@ -1,0 +1,18 @@
+source "https://rubygems.org/"
+
+group :production do
+  gem "rack"
+  gem "puma"
+  gem "aws-sdk"
+  gem "dotenv"
+  gem "alephant-broker"
+  gem "crimp"
+end
+
+group :development do
+  gem "rake"
+  gem "spurious"
+  gem "spurious-ruby-awssdk-helper"
+  gem "alephant-harness"
+  gem "pry"
+end
