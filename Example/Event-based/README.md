@@ -65,13 +65,7 @@ Spurious is built using [Docker](https://www.docker.com/) and so it requires Doc
 
 Spurious also provides a visual browser which allows you an easier way to view what content each supported AWS resource contains: [https://github.com/stevenjack/spurious-browser](https://github.com/stevenjack/spurious-browser).
 
-The browser is a Ruby Rack application and can be run by following these steps:
-
-1. `cd ~/`
-2. `git clone https://github.com/stevenjack/spurious-browser.git`
-3. `cd spurious-browser`
-4. `rackup`
-5. Visit `http://localhost:9292/` and enter the relevant credentials defined in `{Broker|Renderer|Sender}/config/development/env.yaml`
+To use the browser follow these [instructions](https://github.com/stevenjack/spurious#gui).
 
 ### Standard AWS account
 
