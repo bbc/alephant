@@ -24,27 +24,41 @@ GEM
     coderay (1.1.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
+    ffi (1.9.10-java)
     hashie (3.3.2)
     i18n (0.6.11)
     json (1.8.1)
+    json (1.8.1-java)
     method_source (0.8.2)
     mini_portile (0.6.1)
     multipart-post (2.0.0)
     mustache (0.99.8)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
+    nokogiri (1.6.5-java)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry (0.10.1-java)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+      spoon (~> 0.0)
     rack (1.5.2)
     rake (10.4.2)
     slop (3.6.0)
+    spoon (0.0.4)
+      ffi
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   alephant-publisher-request (~> 0.1.1)
   faraday
   pry
+
+BUNDLED WITH
+   1.11.2
