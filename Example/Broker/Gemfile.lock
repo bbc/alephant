@@ -1,0 +1,69 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    alephant-harness (0.2.0)
+      aws-sdk
+    archive-tar-minitar (0.5.2)
+    aws-sdk (1.59.0)
+      aws-sdk-v1 (= 1.59.0)
+    aws-sdk-v1 (1.59.0)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+    coderay (1.1.0)
+    crimp (0.0.1)
+    daemons (1.1.9)
+    docker (0.0.1)
+    docker-api (1.13.6)
+      archive-tar-minitar
+      excon (>= 0.38.0)
+      json
+    dotenv (1.0.2)
+    em-synchrony (1.0.3)
+      eventmachine (>= 1.0.0.beta.1)
+    eventmachine (1.0.3)
+    excon (0.41.0)
+    json (1.8.1)
+    method_source (0.8.2)
+    mini_portile (0.6.1)
+    nokogiri (1.6.4.1)
+      mini_portile (~> 0.6.0)
+    peach (0.5.1)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    puma (2.9.2)
+      rack (>= 1.1, < 2.0)
+    rack (1.5.2)
+    slop (3.6.0)
+    spurious (0.3.0)
+      docker
+      docker-api
+      eventmachine
+      spurious-server (~> 0.4.0)
+      thor
+      timeout
+    spurious-ruby-awssdk-helper (0.2.2)
+      aws-sdk
+    spurious-server (0.4.1)
+      daemons
+      docker-api
+      em-synchrony
+      eventmachine
+      peach
+    thor (0.19.1)
+    timeout (0.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  alephant-harness
+  aws-sdk
+  crimp
+  dotenv
+  pry
+  puma
+  rack
+  spurious
+  spurious-ruby-awssdk-helper
