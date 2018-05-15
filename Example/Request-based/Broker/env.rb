@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-dynamodb'
 require 'dotenv'
 
 ENV['APP_ENV']      = ENV.fetch('APP_ENV', 'development')

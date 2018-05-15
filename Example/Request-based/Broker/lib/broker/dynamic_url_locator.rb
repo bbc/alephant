@@ -6,7 +6,7 @@ module Broker
   class DynamicUrlLocator < Alephant::Broker::LoadStrategy::HTTP::URL
     def initialize(config)
       @config = config
-      @dynamo = AWS::DynamoDB::Client::V20120810.new
+      @dynamo = Aws::DynamoDB::Client.new
     end
 
     def generate(comp_id, opts)
@@ -22,7 +22,7 @@ module Broker
     end
 
     def location_from(results)
-      results[:count] == 1 ? results[:member].first['location'][:s]
+      results.count == 1 ? results.items.first['location']
                            : raise(Broker::DynamicUrlLocator::NotFound)
     end
 
@@ -34,14 +34,10 @@ module Broker
 
     def query_options(opts_hash)
       {
-        :attributes_to_get => [
-          'location'
-        ],
+        :attributes_to_get => [ 'location' ],
         :key_conditions => {
           'opts_hash' => {
-            :attribute_value_list => [
-              { 's' => opts_hash }
-            ],
+            :attribute_value_list => [ opts_hash ],
             :comparison_operator => 'EQ'
           }
         },

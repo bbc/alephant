@@ -36,18 +36,16 @@ class Sender
     }.to_json
   end
 
-  def queue
-    @queue ||= sqs.queues.named(ENV['SQS_QUEUE_NAME']).tap do |q|
-      q.visibility_timeout = 120
-    end
-  end
-
   def random
     Random.rand(1..5)
   end
 
   def send(msg)
-    queue.send_message msg
+    client.send_message(
+      queue_url:    queue_url,
+      message_body: msg
+    )
+
     logger.info 'Message sent'
   end
 
@@ -58,8 +56,18 @@ class Sender
     end
   end
 
-  def sqs
-    @sqs ||= AWS::SQS.new
+  def client
+    options = {}
+    options[:endpoint] = ENV['AWS_SQS_ENDPOINT'] if ENV['AWS_SQS_ENDPOINT']
+    @client ||= Aws::SQS::Client.new(options)
+  end
+
+  def queue_url
+    options = {
+      queue_name: ENV['SQS_QUEUE_NAME']
+    }
+
+    client.get_queue_url(options).queue_url
   end
 end
 
