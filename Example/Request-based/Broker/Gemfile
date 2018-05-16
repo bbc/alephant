@@ -3,7 +3,7 @@ source "https://rubygems.org/"
 group :production do
   gem "rack"
   gem "puma"
-  gem "aws-sdk"
+  gem 'aws-sdk-dynamodb'
   gem "dotenv"
   gem "alephant-broker"
   gem "crimp"

@@ -3,7 +3,6 @@ source "https://rubygems.org/"
 group :production do
   gem "rack"
   gem "puma"
-  gem "aws-sdk"
   gem "dotenv"
   gem "alephant-broker"
 end

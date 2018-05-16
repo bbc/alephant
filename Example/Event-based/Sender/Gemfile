@@ -1,7 +1,7 @@
 source "https://rubygems.org/"
 
 group :production do
-  gem "aws-sdk"
+  gem 'aws-sdk-sqs'
   gem "dotenv"
 end
 

@@ -1,7 +1,6 @@
 source "https://rubygems.org/"
 
 group :production do
-  gem "aws-sdk"
   gem "dotenv"
   gem "alephant-publisher-queue"
 end
